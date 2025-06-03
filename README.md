@@ -1,4 +1,4 @@
-# Prog2Obligatorio
+# Programacion II, Obligatorio
 Universidad de Montevideo
 
 Obligatorio
