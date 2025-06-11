@@ -1,5 +1,7 @@
 package um.edu.uy.Entities;
 
+import um.edu.uy.List.ListaEnlazada;
+
 import java.time.LocalDate;
 
 public class Pelicula {
@@ -9,14 +11,18 @@ public class Pelicula {
     private String idiomaOriginal;
     private long ingreso;
     private LocalDate fecha;
+    private ListaEnlazada<Actor> actores;
+    private Director director;
 
-    public Pelicula(int id, String titulo, String genero, String idiomaOriginal, long ingreso, LocalDate fecha){
+    public Pelicula(int id, String titulo, String genero, String idiomaOriginal, long ingreso, LocalDate fecha, Director director){
         this.id = id;
         this.titulo = titulo;
         this.genero = genero;
         this.idiomaOriginal = idiomaOriginal;
         this.ingreso = ingreso;
         this.fecha = fecha;
+        this.actores = new ListaEnlazada<>();
+        this.director = director;
     }
 
     public int getId() {

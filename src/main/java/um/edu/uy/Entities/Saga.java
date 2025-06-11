@@ -1,12 +1,24 @@
 package um.edu.uy.Entities;
 
+import um.edu.uy.List.ListaEnlazada;
+
 public class Saga { //Nota de github, para subir al repositorio primero se tiene que hacer un commit para aniadir a la rama y luego el push para el github
     private int id;
     private String nombre;
+    private ListaEnlazada<Pelicula> peliculas;
 
-    public Saga(int id, String nombre ){
+    public Saga(int id, String nombre){
         this.id = id;
         this.nombre = nombre;
+        this.peliculas = new ListaEnlazada<>();
+    }
+
+    public ListaEnlazada<Pelicula> getPeliculas() {
+        return peliculas;
+    }
+
+    public void setPeliculas(ListaEnlazada<Pelicula> peliculas) {
+        this.peliculas = peliculas;
     }
 
     public String getNombre() {
