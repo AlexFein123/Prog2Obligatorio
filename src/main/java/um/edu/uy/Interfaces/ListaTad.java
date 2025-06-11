@@ -1,6 +1,6 @@
 package um.edu.uy.Interfaces;
 
-public interface LISTATAD {
+public interface ListaTad<K> {
 
     void agregar(Object valor);
 
@@ -13,4 +13,5 @@ public interface LISTATAD {
     void agregarOrdenado(Object valor);
 
     void intercambiar(Object valor, int direccion);
+
 }

@@ -1,6 +1,6 @@
 package um.edu.uy.List;
 
-public class ListNode {
+public class ListNode<K> {
     public int item;
-    public ListNode next;
+    public ListNode<K> next;
 }

@@ -1,8 +1,8 @@
 package um.edu.uy.List;
 
-import um.edu.uy.Interfaces.LISTATAD;
+import um.edu.uy.Interfaces.ListaTad;
 
-public class ListaDobleEnlazada implements LISTATAD {
+public class ListaDobleEnlazada implements ListaTad {
     private NodoDoble inicio;
 
     public ListaDobleEnlazada() {
