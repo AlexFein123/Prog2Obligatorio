@@ -3,18 +3,17 @@ package um.edu.uy.Entities;
 
 import um.edu.uy.List.ListaEnlazada;
 
-public class Usuario implements Comparable<Usuario> {
+public class Usuario extends Persona implements Comparable<Usuario> {
 
     private long idUsuario;
     private String nombreUsuario;
     private ListaEnlazada<Usuario> evaluaciones;
 
-
-    public Usuario(long idUsuario, String nombreUsuario) {
-        this.idUsuario = idUsuario;
-        this.nombreUsuario = nombreUsuario;
+    public Usuario(double id, String nombre) {
+        super(id, nombre);
         this.evaluaciones = new ListaEnlazada<>();
     }
+
 
     public long getIdUsuario() {
         return idUsuario;
