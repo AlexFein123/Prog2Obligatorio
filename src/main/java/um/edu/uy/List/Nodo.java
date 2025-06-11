@@ -1,8 +1,8 @@
 package um.edu.uy.List;
 
-public class Nodo {
+public class Nodo<T> {
     private Object valor;
-    private Nodo siguiente;
+    private Nodo<T> siguiente;
 
     public Nodo(Object valor) {
         this.valor = valor;
@@ -13,11 +13,11 @@ public class Nodo {
         return valor;
     }
 
-    public Nodo getSiguiente() {
+    public Nodo<T> getSiguiente() {
         return siguiente;
     }
 
-    public void setSiguiente(Nodo siguiente) {
+    public void setSiguiente(Nodo<T> siguiente) {
         this.siguiente = siguiente;
     }
 }

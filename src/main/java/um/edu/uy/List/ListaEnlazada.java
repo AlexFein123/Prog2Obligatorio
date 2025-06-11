@@ -1,26 +1,33 @@
 package um.edu.uy.List;
 
-import um.edu.uy.Interfaces.LISTATAD;
+import um.edu.uy.Interfaces.ListaTad;
 
-public class ListaEnlazada implements LISTATAD {
-    private Nodo inicio;
+public class ListaEnlazada<T> implements ListaTad<T> {
+    private Nodo<T> inicio;
+    private int size;
 
     public ListaEnlazada() {
         this.inicio = null;
+        this.size=0;
+    }
+
+    public int getSize() {
+        return size;
     }
 
     @Override
     public void agregar(Object valor) {
-        Nodo nuevoNodo = new Nodo(valor);
+        Nodo<T> nuevoNodo = new Nodo<>(valor);
         if (inicio == null) {
             inicio = nuevoNodo;
         } else {
-            Nodo actual = inicio;
+            Nodo<T> actual = inicio;
             while (actual.getSiguiente() != null) {
                 actual = actual.getSiguiente();
             }
             actual.setSiguiente(nuevoNodo);
         }
+        size++;
     }
 
     public void imprimirLista() {
@@ -44,14 +51,16 @@ public class ListaEnlazada implements LISTATAD {
     }
     @Override
     public void agregarAlInicio(Object valor) {
-        Nodo nuevoNodo = new Nodo(valor);
+        Nodo<T> nuevoNodo = new Nodo<>(valor);
         nuevoNodo.setSiguiente(inicio);
         inicio = nuevoNodo;
+        size++;
     }
 
     @Override
     public void agregarAlFinal(Object valor) {
         this.agregar(valor);
+        size++;
     }
 
     @Override
@@ -78,13 +87,14 @@ public class ListaEnlazada implements LISTATAD {
 
         nuevo.setSiguiente(actual.getSiguiente());
         actual.setSiguiente(nuevo);
+        size++;
     }
 
     public void visualizar(ListaEnlazada posiciones) {
-        Nodo actual = this.inicio;
+        Nodo<T> actual = this.inicio;
         int indice = 1;
 
-        Nodo nodoPos = posiciones.inicio;
+        Nodo<T> nodoPos = posiciones.inicio;
 
         while (actual != null && nodoPos != null) {
             Integer posBuscada = (Integer) nodoPos.getValor();

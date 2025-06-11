@@ -1,18 +1,18 @@
 package um.edu.uy.List;
 
 public class List<K> {
-    public ListNode head;
+    public ListNode<K> head;
 
     public List<K> crearNuevaLista() {
         List<K> nueva = new List<K>();
-        ListNode nuevoHead = null;
-        ListNode nuevoActual = null;
+        ListNode<K> nuevoHead = null;
+        ListNode<K> nuevoActual = null;
 
-        ListNode actual = this.head;
+        ListNode<K> actual = this.head;
 
         while (actual != null) {
             if (actual.item >= 0) {
-                ListNode nuevoNodo = new ListNode();
+                ListNode<K> nuevoNodo = new ListNode<>();
                 nuevoNodo.item = actual.item;
 
                 if (nuevoHead == null) {
@@ -36,7 +36,7 @@ public class List<K> {
             head = head.next;
         }
 
-        ListNode actual = head;
+        ListNode<K> actual = head;
 
         while (actual != null && actual.next != null) {
             if (actual.next.item >= 0) {
@@ -47,12 +47,14 @@ public class List<K> {
         }
     }
     public void imprimir() {
-        ListNode actual = head;
+        ListNode<K> actual = head;
         while (actual != null) {
             System.out.print(actual.item + " ");
             actual = actual.next;
         }
         System.out.println();
     }
+
+
 
 }
