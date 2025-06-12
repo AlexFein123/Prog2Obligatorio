@@ -13,15 +13,8 @@ public abstract class Persona {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
     public double getId() {
         return id;
     }
 
-    public void setId(double id) {
-        this.id = id;
-    }
 }

@@ -25,6 +25,7 @@ public class Pelicula {
         this.director = director;
     }
 
+
     public int getId() {
         return id;
     }
@@ -73,6 +74,15 @@ public class Pelicula {
         this.ingreso = ingreso;
     }
 
+    public void setDirector(Director director){this.director= director;}
+
+    public Director getDirector (){
+        return director;
+    }
+
+    public void setActores(ListaEnlazada<Actor> actores) {
+        this.actores = actores;
+    }
 
 
 
