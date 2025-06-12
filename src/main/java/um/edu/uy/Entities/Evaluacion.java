@@ -1,32 +1,28 @@
 package um.edu.uy.Entities;
 
 public class Evaluacion {
-    private int idpelicula;
-    private double idpersona;
+    private Pelicula pelicula;
+    private Usuario user;
     private int clasificacion;
     private String fecha;
 
-    public Evaluacion (int idpelicula, double idpersona, int clasificacion, String fecha){
-        this.idpelicula = idpelicula;
-        this.idpersona = idpersona;
+    public Evaluacion (Pelicula pelicula,Usuario user, int clasificacion, String fecha){
+        this.pelicula =pelicula;
+        this.user = new Usuario(user.getId(),user.getNombre());
         this.clasificacion = clasificacion;
         this.fecha = fecha;
     }
 
-    public double getIdpersona() {
-        return idpersona;
+    public void setPelicula(Pelicula pelicula) {
+        this.pelicula= pelicula;
     }
 
-    public void setIdpersona(double idpersona) {
-        this.idpersona = idpersona;
+    public Usuario getUser(){
+        return this.user;
     }
 
-    public int getIdpelicula() {
-        return idpelicula;
-    }
-
-    public void setIdpelicula(int idpelicula) {
-        this.idpelicula = idpelicula;
+    public void setUser(Usuario user){
+        this.user = user;
     }
 
     public int getClasificacion() {

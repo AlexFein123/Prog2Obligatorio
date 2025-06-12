@@ -6,8 +6,8 @@ import um.edu.uy.List.ListaEnlazada;
 public class Usuario extends Persona implements Comparable<Usuario> {
 
     private long idUsuario;
-    private String nombreUsuario;
-    private ListaEnlazada<Usuario> evaluaciones;
+
+    private ListaEnlazada<Evaluacion> evaluaciones;
 
     public Usuario(double id, String nombre) {
         super(id, nombre);
@@ -19,14 +19,14 @@ public class Usuario extends Persona implements Comparable<Usuario> {
         return idUsuario;
     }
 
-    public void agregarEvaluacion(Pelicula pelicula, float calificacion) {
-        evaluaciones.agregar(pelicula);
-
+    public void setEvaluacion(Evaluacion e){
+        evaluaciones.agregar(e);
     }
 
 
+
     @Override
-    public int compareTo(Usuario user) { //mas libros comparados que user
+    public int compareTo(Usuario user) { //mas evaluaciones comparados que user
         int valor=-1;
         if(this.evaluaciones.getSize()==user.evaluaciones.getSize()){
             valor=0;
@@ -36,7 +36,6 @@ public class Usuario extends Persona implements Comparable<Usuario> {
         return valor;
 
     }
-
 
 
     @Override
