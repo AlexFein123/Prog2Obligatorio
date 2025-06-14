@@ -1,11 +1,15 @@
 package um.edu.uy;
 
 import java.util.Scanner;
+import um.edu.uy.Entities.CargadorCSV;
+import um.edu.uy.Entities.Usuario;
+import um.edu.uy.List.ListaEnlazada;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         // SistemaUMovie sistema = new SistemaUMovie();
+        System.out.println("Directorio actual: " + System.getProperty("user.dir"));
 
         while (true) {
             System.out.println("Seleccione la opción que desee:");
@@ -18,7 +22,8 @@ public class Main {
             switch (opcion) {
                 case "1":
                     long inicioCarga = System.currentTimeMillis();
-                    //sistema.cargarDatos();
+                    ListaEnlazada<Usuario> usuarios = CargadorCSV.cargarUsuarios("src/main/resources/ratings_1mm.csv");
+
                     long finCarga = System.currentTimeMillis();
                     System.out.println("Carga de datos exitosa, tiempo de ejecución de la carga: " + (finCarga - inicioCarga) + " ms");
                     break;
