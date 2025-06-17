@@ -1,9 +1,9 @@
 package um.edu.uy;
 
 import java.util.Scanner;
-import um.edu.uy.Entities.CargadorCSV;
-import um.edu.uy.Entities.Usuario;
-import um.edu.uy.List.ListaEnlazada;
+
+import um.edu.uy.entities.Usuario;
+import um.edu.uy.tads.ListaEnlazada;
 
 public class Main {
     public static void main(String[] args) {
