@@ -20,7 +20,7 @@ public class Usuario extends Persona implements Comparable<Usuario> {
     }
 
     public void setEvaluacion(Evaluacion e){
-        evaluaciones.agregar(e);
+        evaluaciones.agregarOrdenado(e);
     }
 
 
@@ -28,9 +28,9 @@ public class Usuario extends Persona implements Comparable<Usuario> {
     @Override
     public int compareTo(Usuario user) { //mas evaluaciones comparados que user
         int valor=-1;
-        if(this.evaluaciones.getSize()==user.evaluaciones.getSize()){
+        if(this.evaluaciones.tamanio()==user.evaluaciones.tamanio()){
             valor=0;
-        }else if(this.evaluaciones.getSize()>user.evaluaciones.getSize()){
+        }else if(this.evaluaciones.tamanio()>user.evaluaciones.tamanio()){
             valor=1;
         }
         return valor;

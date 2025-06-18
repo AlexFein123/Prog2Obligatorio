@@ -1,10 +1,10 @@
 package um.edu.uy.tads;
 
 public class Nodo<T> {
-    private Object valor;
+    private T valor;
     private Nodo<T> siguiente;
 
-    public Nodo(Object valor) {
+    public Nodo(T valor) {
         this.valor = valor;
         this.siguiente = null;
     }

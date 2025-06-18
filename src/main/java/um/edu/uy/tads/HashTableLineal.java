@@ -1,3 +1,4 @@
+/*
 package um.edu.uy.tads;
 
 import um.edu.uy.exceptions.ElementoYaExistenteException;
@@ -105,3 +106,6 @@ public class HashTableLineal implements HashTable {
         return true;
     }
 }
+
+
+ */

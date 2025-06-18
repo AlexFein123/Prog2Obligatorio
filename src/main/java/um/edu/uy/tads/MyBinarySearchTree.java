@@ -3,9 +3,7 @@ package um.edu.uy.tads;
 import um.edu.uy.exceptions.EmptyQueueException;
 import um.edu.uy.interfaces.MyBinarySearchTRee;
 
-public class MyBinarySearchTree<K extends Comparable<K>, T> implements MyBinarySearchTRee<K,T> {
-
-
+public class MyBinarySearchTree<K extends Comparable<K>, T> implements MyBinarySearchTRee<K, T> {
 
     private Node<K, T> raiz;
 
@@ -13,16 +11,15 @@ public class MyBinarySearchTree<K extends Comparable<K>, T> implements MyBinaryS
         this.raiz = null;
     }
 
-
     @Override
     public void insertar(K key, T value) {
-
         this.raiz = insert(key, value, this.raiz);
-
     }
 
     @Override
-    public void borrar (K key){ this.raiz = delete(key, this.raiz); }
+    public void borrar(K key) {
+        this.raiz = delete(key, this.raiz);
+    }
 
     @Override
     public boolean contiene(K key) {
@@ -30,9 +27,9 @@ public class MyBinarySearchTree<K extends Comparable<K>, T> implements MyBinaryS
     }
 
     @Override
-    public int tamanio(){ return size(this.raiz); }
-
-
+    public int tamanio() {
+        return tamanio(this.raiz);
+    }
 
     @Override
     public ListaEnlazada<T> inOrder() {
@@ -55,206 +52,130 @@ public class MyBinarySearchTree<K extends Comparable<K>, T> implements MyBinaryS
     @Override
     public ListaEnlazada<T> nivel() {
         ListaEnlazada<T> listaNivel = new ListaEnlazada<>();
-        ColaSimple<Node<K, T>> listaSubTree = new ColaSimple<>();
-        listaSubTree.enqueue(this.raiz);
+        ColaSimple<Node<K, T>> cola = new ColaSimple<>();
 
-        while (!listaSubTree.isEmpty()) {
-            Node<K, T> temp = null;
+        cola.enqueue(this.raiz);
+
+        while (!cola.isEmpty()) {
             try {
-                temp = listaSubTree.dequeue();
-            } catch (EmptyQueueException error) {
-                error.printStackTrace();
-            }
+                Node<K, T> temp = cola.dequeue();
+                listaNivel.agregarOrdenado(temp.getValue());
 
-            listaNivel.agregarOrdenado(temp.getValue());
-
-            if (temp.getLeft() != null) {
-                listaSubTree.enqueue(temp.getLeft());
-            }
-
-            if (temp.getRight() != null) {
-                listaSubTree.enqueue(temp.getRight());
+                if (temp.getIzquierda() != null) {
+                    cola.enqueue(temp.getIzquierda());
+                }
+                if (temp.getDerecha() != null) {
+                    cola.enqueue(temp.getDerecha());
+                }
+            } catch (EmptyQueueException e) {
+                e.printStackTrace();
             }
         }
 
         return listaNivel;
     }
 
-    
-
-    
-
-    private Node<K, T> insert(K key, T value, Node<K, T> subTree){
-
-
-        if (subTree == null){
-            Node<K, T> newNode = new Node(key, value);
-            subTree = newNode;
-
-        } else {
-            if (key.compareTo(subTree.getKey()) > 0){
-                subTree.setRight(insert(key, value, subTree.getRight()));
-            } else if (key.compareTo(subTree.getKey()) < 0){
-                subTree.setLeft(insert(key, value, subTree.getLeft()));
-            } else{
-                // El elementro ya esta insertado, no se hace nada
-            }
-        }
-        return subTree;
-    }
-
-    private Node<K,T> delete (K elemento, Node<K,T> subtree){
-        Node<K,T> subtreeToReturn = subtree;
-
-        if (elemento.compareTo(subtree.getKey()) == 0){
-            if (subtree.getLeft() == null && subtree.getRight() == null){
-                subtreeToReturn = null;
-            }else if(subtree.getRight() == null){
-                subtreeToReturn = subtree.getLeft();
-            } else if(subtree.getLeft() == null){
-                subtreeToReturn = subtree.getRight();
-            }else {
-                Node<K,T> min = findMax(subtree.getLeft());
-                subtree.setKey(min.getKey());
-                subtree.setValue(min.getValue());
-                subtree.setLeft(delete(min.getKey(), subtree.getLeft()));
-
-
-            }
-        } else if (elemento.compareTo(subtree.getKey()) > 0){
-            subtree.setRight(delete(elemento, subtree.getRight()));
-
-
-        } else{
-            subtree.setLeft(delete(elemento, subtree.getLeft()));
-
-
+    private Node<K, T> insert(K key, T value, Node<K, T> subarbol) {
+        if (subarbol == null) {
+            return new Node<>(key, value);
         }
 
-        return subtreeToReturn;
+        int cmp = key.compareTo(subarbol.getKey());
 
+        if (cmp > 0) {
+            subarbol.setDerecha(insert(key, value, subarbol.getDerecha()));
+        } else if (cmp < 0) {
+            subarbol.setIzquierda(insert(key, value, subarbol.getIzquierda()));
+        }
+
+        return subarbol;
     }
 
-    private boolean contains(K key, Node<K, T> subTree){
+    private Node<K, T> delete(K key, Node<K, T> subarbol) {
+        if (subarbol == null) return null;
 
-        boolean result = false;
+        int cmp = key.compareTo(subarbol.getKey());
 
-        if (subTree != null){
-            if(key.compareTo(subTree.getKey()) == 0){
-                result = true;
-            } else if (key.compareTo(subTree.getKey()) > 0){
-                result = contains(key, subTree.getRight());
+        if (cmp == 0) {
+            if (subarbol.getIzquierda() == null && subarbol.getDerecha() == null) {
+                return null;
+            } else if (subarbol.getDerecha() == null) {
+                return subarbol.getIzquierda();
+            } else if (subarbol.getIzquierda() == null) {
+                return subarbol.getDerecha();
             } else {
-                result = contains(key, subTree.getLeft());
+                Node<K, T> maxNode = findMax(subarbol.getIzquierda());
+                subarbol.setKey(maxNode.getKey());
+                subarbol.setValue(maxNode.getValue());
+                subarbol.setIzquierda(delete(maxNode.getKey(), subarbol.getIzquierda()));
             }
+        } else if (cmp > 0) {
+            subarbol.setDerecha(delete(key, subarbol.getDerecha()));
+        } else {
+            subarbol.setIzquierda(delete(key, subarbol.getIzquierda()));
         }
 
-        return result;
+        return subarbol;
     }
 
-    private int size(Node<K,T> subtree) {
-        int size = 0;
+    private boolean contains(K key, Node<K, T> subarbol) {
+        if (subarbol == null) return false;
 
-        if (subtree != null){
-            size++;
-            if (subtree.getLeft() != null){
-                size = size + size(subtree.getLeft());
-            }
-            if(subtree.getRight() != null){
-                size = size + size(subtree.getRight());
-            }
-        }
-        return size;
+        int cmp = key.compareTo(subarbol.getKey());
+
+        if (cmp == 0) return true;
+        if (cmp > 0) return contains(key, subarbol.getDerecha());
+        return contains(key, subarbol.getIzquierda());
     }
 
-    private int countLeaf(Node<K, T> subtree){
-        int leafs = 0;
-
-        if (subtree != null){
-            if (subtree.getRight() != null || subtree.getLeft() != null){
-                if (subtree.getRight() != null){
-                    leafs = leafs + countLeaf(subtree.getRight());
-                }
-                if (subtree.getLeft() != null){
-                    leafs = leafs + countLeaf(subtree.getLeft());
-                }
-            } else{
-                leafs++;
-            }
-        }
-        return leafs;
+    private int tamanio(Node<K, T> subarbol) {
+        if (subarbol == null) return 0;
+        return 1 + tamanio(subarbol.getIzquierda()) + tamanio(subarbol.getDerecha());
     }
 
+    private int cantHojas(Node<K, T> subarbol) {
+        if (subarbol == null) return 0;
 
-    private ListaEnlazada<T>
- postOrder(Node<K, T> subtree, ListaEnlazada<T>
- listaPostOrder){
-
-        if (subtree != null){
-            if (subtree.getLeft() != null){
-                postOrder(subtree.getLeft(), listaPostOrder);
-            }
-            if (subtree.getRight() != null){
-                postOrder(subtree.getRight(), listaPostOrder);
-            }
-            listaPostOrder.agregarOrdenado
-(subtree.getValue());
-        }
-        return listaPostOrder;
-
-    }
-
-    private ListaEnlazada<T>
- preOrder(Node<K, T> subtree, ListaEnlazada<T>
- listaPreOrder){
-
-        if (subtree != null){
-            listaPreOrder.agregarOrdenado
-(subtree.getValue());
-            if (subtree.getLeft() != null){
-                preOrder(subtree.getLeft(), listaPreOrder);
-            }
-            if (subtree.getRight() != null){
-                preOrder(subtree.getRight(), listaPreOrder);
-            }
-        }
-        return listaPreOrder;
-    }
-
-    private ListaEnlazada<T>
- inOrder(Node<K,T> subtree, ListaEnlazada<T>
- listaInOrder){
-
-
-        if (subtree != null){
-            if (subtree.getLeft() != null){
-                inOrder(subtree.getLeft(), listaInOrder);
-            }
-            listaInOrder.agregarOrdenado(subtree.getValue());
-            if (subtree.getRight() != null){
-                inOrder(subtree.getRight(), listaInOrder);
-            }
-        }
-        return listaInOrder;
-    }
-
-    private Node<K,T> findMax (Node<K,T> subtree){
-        Node<K,T> treeToReturn = null;
-
-        if (subtree != null){
-            if(subtree.getRight() == null){
-                treeToReturn = subtree;
-            } else{
-                treeToReturn = findMax(subtree.getRight());
-            }
+        if (subarbol.getIzquierda() == null && subarbol.getDerecha() == null) {
+            return 1;
         }
 
-        return treeToReturn;
-
+        return cantHojas(subarbol.getIzquierda()) + cantHojas(subarbol.getDerecha());
     }
 
+    private ListaEnlazada<T> inOrder(Node<K, T> subarbol, ListaEnlazada<T> lista) {
+        if (subarbol != null) {
+            inOrder(subarbol.getIzquierda(), lista);
+            lista.agregarOrdenado(subarbol.getValue());
+            inOrder(subarbol.getDerecha(), lista);
+        }
+        return lista;
+    }
 
+    private ListaEnlazada<T> preOrder(Node<K, T> subarbol, ListaEnlazada<T> lista) {
+        if (subarbol != null) {
+            lista.agregarOrdenado(subarbol.getValue());
+            preOrder(subarbol.getIzquierda(), lista);
+            preOrder(subarbol.getDerecha(), lista);
+        }
+        return lista;
+    }
 
+    private ListaEnlazada<T> postOrder(Node<K, T> subarbol, ListaEnlazada<T> lista) {
+        if (subarbol != null) {
+            postOrder(subarbol.getIzquierda(), lista);
+            postOrder(subarbol.getDerecha(), lista);
+            lista.agregarOrdenado(subarbol.getValue());
+        }
+        return lista;
+    }
+
+    private Node<K, T> findMax(Node<K, T> subarbol) {
+        if (subarbol == null) return null;
+        if (subarbol.getDerecha() == null) return subarbol;
+        return findMax(subarbol.getDerecha());
+    }
 }
+
 
 
