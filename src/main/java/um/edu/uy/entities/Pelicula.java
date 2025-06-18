@@ -12,6 +12,7 @@ public class Pelicula {
     private long ingreso;
     private LocalDate fecha;
     private ListaEnlazada<Actor> actores;
+    private ListaEnlazada<Evaluacion> evaluacionesDelaPelicula;
     private Director director;
 
     public Pelicula(int id, String titulo, String genero, String idiomaOriginal, long ingreso, LocalDate fecha, Director director){
@@ -84,6 +85,27 @@ public class Pelicula {
         this.actores = actores;
     }
 
+    public int mediaCalificaciones(){
+        if (evaluacionesDelaPelicula.isEmpty()){
+            return 0; //no hay evaluaciones de la pelicula
+        }
+        int suma=0;
+        int total=0;
+
+        for(int enEvaluaciones=0;enEvaluaciones<evaluacionesDelaPelicula.getSize();enEvaluaciones++){
+            Evaluacion evaluacion= evaluacionesDelaPelicula.get(enEvaluaciones);
+            suma += evaluacion.getClasificacion();
+            total++;
+        }
+        return (suma/total);
+    }
+    @Override
+    public String toString(){
+        return "Id de la película: " +getId()+ "/n" +
+                "Título de la película: " + getTitulo()+"/n" +
+                "Calificación media: "+ mediaCalificaciones()+ "/n";
+
+    }
 
 
 }

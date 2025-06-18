@@ -190,5 +190,20 @@ public class ListaEnlazada<T> implements ListaTad<T> {
 
         return resultado;
     }
+    public T get(int position) {
+        if (position < 0 || position >= size) {
+            throw new IndexOutOfBoundsException("Posición inválida");
+        }
+
+        Nodo<T> temp = inicio;
+        for (int i = 0; i < position; i++) {
+            temp = temp.getSiguiente();
+        }
+        return (T) temp.getValor();
+    }
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
 }
 
