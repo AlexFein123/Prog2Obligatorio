@@ -3,8 +3,14 @@ package um.edu.uy.interfaces;
 
 import um.edu.uy.exceptions.ElementoYaExistenteException;
 
-public interface HashTable {
-    public void insertar(String clave, Object valor) throws ElementoYaExistenteException;
-    public boolean pertenece(String clave);
-    public void borrar(String clave);
+public interface HashTable<K,T> {
+
+    void agregar(K key, T value);
+
+    T obtener(K key);
+
+    T remover(K key);
+
+    int size();
+
 }

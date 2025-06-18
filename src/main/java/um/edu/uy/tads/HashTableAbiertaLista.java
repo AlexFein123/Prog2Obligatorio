@@ -1,4 +1,4 @@
-package um.edu.uy.tads;
+/*package um.edu.uy.tads;
 
 import um.edu.uy.exceptions.ElementoYaExistenteException;
 import um.edu.uy.interfaces.HashTable;
@@ -56,3 +56,5 @@ public class HashTableAbiertaLista implements HashTable {
         tabla[h].removeIf(e -> e.clave.equals(clave));
     }
 }
+
+ */

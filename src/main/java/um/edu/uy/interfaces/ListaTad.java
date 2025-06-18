@@ -1,17 +1,26 @@
 package um.edu.uy.interfaces;
+import um.edu.uy.exceptions.FueraDeRango;
+public interface ListaTad<T> {
 
-public interface ListaTad<K> {
+    void agregarposicion (T valor, int posicion) throws FueraDeRango;
+    void agregarprimero (T valor);
+    void agregarAlFinal(T valor);
+    void agregarOrdenado(T valor);
 
-    void agregar(Object valor);
+    boolean contiene(T valor);
 
-    boolean contiene(Object valor);
+    T remover (int posicion) throws FueraDeRango;
+    T removerultimo ();
 
-    void agregarAlInicio(Object valor);
+    T obtenervalorposicion (int posicion) throws FueraDeRango;
 
-    void agregarAlFinal(Object valor);
+    T obtener (T valueToSearch);
 
-    void agregarOrdenado(Object valor);
 
-    void intercambiar(Object valor, int direccion);
+    int tamanio();
+
+    T[] toArray();
+
+
 
 }
