@@ -1,16 +1,9 @@
 package um.edu.uy.interfaces;
 
-
 import um.edu.uy.exceptions.ElementoYaExistenteException;
 
 public interface HashTable<K,T> {
-
-    void agregar(K key, T value);
-
-    T obtener(K key);
-
-    T remover(K key);
-
-    int size();
-
+    public void insertar (K clave,T valor) throws ElementoYaExistenteException, ElementoYaExistenteException;
+    public boolean pertenece (K clave);
+    public void borrar (K clave);
 }

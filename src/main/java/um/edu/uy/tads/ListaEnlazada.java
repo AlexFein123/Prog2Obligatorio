@@ -248,6 +248,12 @@ public class ListaEnlazada<T> implements ListaTad<T> {
             actual.setSiguiente(anterior);
         }
     }
+    public boolean isEmpty(){
+        if (size==0){
+            return true;
+        }
+        return false;
+    }
 
 }
 
