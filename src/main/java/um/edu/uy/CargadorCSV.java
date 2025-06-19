@@ -27,7 +27,7 @@ public class CargadorCSV {
                 String[] partes = linea.split(",");
                 try {
                     int id = Integer.parseInt(partes[0].trim());
-                    usuarios.agregar(new Usuario(id));
+                   // usuarios.agregarOrdenado(new Usuario(id));
                     System.out.println("Usuario agregados: " + i);
                 } catch (NumberFormatException e) {
                     System.err.println("Línea con id no numérico: " + partes[0]);
