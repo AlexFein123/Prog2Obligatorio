@@ -22,7 +22,7 @@ public class Main {
             switch (opcion) {
                 case "1":
                     long inicioCarga = System.currentTimeMillis();
-                    ListaEnlazada<Usuario> usuarios = CargadorCSV.cargarUsuarios("src/main/resources/ratings_1mm.csv");
+                    ListaEnlazada<Usuario> usuarios = CargadorCSV.cargarUsuarios("./ratings_1mm.csv");
 
                     long finCarga = System.currentTimeMillis();
                     System.out.println("Carga de datos exitosa, tiempo de ejecución de la carga: " + (finCarga - inicioCarga) + " ms");
