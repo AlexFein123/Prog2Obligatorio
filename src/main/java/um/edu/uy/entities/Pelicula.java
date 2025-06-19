@@ -1,10 +1,11 @@
 package um.edu.uy.entities;
 
+import um.edu.uy.exceptions.FueraDeRango;
 import um.edu.uy.tads.ListaEnlazada;
 
 import java.time.LocalDate;
 
-public class Pelicula {
+public class Pelicula implements Comparable<Pelicula>{
     private int id;
     private String titulo;
     private String genero;
@@ -12,6 +13,7 @@ public class Pelicula {
     private long ingreso;
     private LocalDate fecha;
     private ListaEnlazada<Actor> actores;
+    private ListaEnlazada<Evaluacion> evaluaciones;
     private Director director;
 
     public Pelicula(int id, String titulo, String genero, String idiomaOriginal, long ingreso, LocalDate fecha, Director director){
@@ -22,6 +24,7 @@ public class Pelicula {
         this.ingreso = ingreso;
         this.fecha = fecha;
         this.actores = new ListaEnlazada<>();
+        this.evaluaciones = new ListaEnlazada<>();
         this.director = director;
     }
 
@@ -84,6 +87,42 @@ public class Pelicula {
         this.actores = actores;
     }
 
+    public int calificacionMedia()  {
+        if (evaluaciones.isEmpty()){
+            return 0; //no tiene evaluaciones
+        }
+        int suma=0;
+        int total=0;
+        for(int enEvaluaciones=0;enEvaluaciones<evaluaciones.tamanio();enEvaluaciones++){
+            Evaluacion evaluacion = null;
+            try {
+                evaluacion = evaluaciones.obtenervalorposicion(enEvaluaciones);
+            } catch (FueraDeRango e) {
+                throw new IllegalStateException("no posible");
+            }
+            suma+= evaluacion.getClasificacion();
+            total++;
+        }
+        return (suma/total);
 
+    }
+    @Override
+    public int compareTo(Pelicula pelicula) { //mejor calificacion
+        int valor=-1;
+        if(this.calificacionMedia()== pelicula.calificacionMedia()){
+           valor=0;
+        }else if(this.calificacionMedia()>pelicula.calificacionMedia()){
+            valor=1; //mejor clasificacion esta que la otra
+        }
+        return valor;
+
+    }
+    @Override
+    public String toString(){
+        return "Id de la película: " +getId()+ "/n" +
+                "Título de la película: " + getTitulo()+"/n" +
+                "Calificación media: "+ calificacionMedia()+ "/n";
+
+    }
 
 }

@@ -1,44 +1,47 @@
 package um.edu.uy.tads;
 
+
 public class NodoHash<K,T> {
+    private K clave;
+    private T valor;
+    private NodoHash<K,T> siguiente;
 
-    private K key;
-    private boolean deleted;
-    private T value;
 
-
-    public NodoHash(K key, T value) {
-        this.key = key;
-        this.value = value;
-        this.deleted = false;
+    public NodoHash(K clave, T valor) {
+        this.clave = clave;
+        this.valor = valor;
+        this.siguiente=null;
     }
 
-    public K getKey() {
-        return key;
+    public K getClave() {
+        return clave;
     }
 
-    public T getValue() {
-        return value;
+    public void setClave(K clave) {
+        this.clave = clave;
     }
 
-    public boolean isDeleted() {
-        return deleted;
+    public T getValor() {
+        return valor;
     }
 
-    public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+    public void setValor(T valor) {
+        this.valor = valor;
     }
 
-    public void setValue(T value) {
-        this.value = value;
+    public NodoHash<K, T> getSiguiente() {
+        return siguiente;
     }
 
-    @Override
+    public void setSiguiente(NodoHash<K, T> siguiente) {
+        this.siguiente = siguiente;
+           
     public boolean equals(Object obj) {
         boolean equalToReturn = false;
         if (obj instanceof NodoHash) {
             equalToReturn = this.key.equals(((NodoHash) obj).getKey());
         }
         return equalToReturn;
+
     }
 }
