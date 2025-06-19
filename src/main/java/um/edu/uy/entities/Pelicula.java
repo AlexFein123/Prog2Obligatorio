@@ -89,7 +89,7 @@ public class Pelicula implements Comparable<Pelicula>{
 
     public int calificacionMedia()  {
         if (evaluaciones.isEmpty()){
-            return 0; //no tiene peliculas
+            return 0; //no tiene evaluaciones
         }
         int suma=0;
         int total=0;
@@ -115,6 +115,13 @@ public class Pelicula implements Comparable<Pelicula>{
             valor=1; //mejor clasificacion esta que la otra
         }
         return valor;
+
+    }
+    @Override
+    public String toString(){
+        return "Id de la película: " +getId()+ "/n" +
+                "Título de la película: " + getTitulo()+"/n" +
+                "Calificación media: "+ calificacionMedia()+ "/n";
 
     }
 
