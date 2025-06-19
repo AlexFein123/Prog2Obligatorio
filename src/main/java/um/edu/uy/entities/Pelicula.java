@@ -83,8 +83,12 @@ public class Pelicula implements Comparable<Pelicula>{
         return director;
     }
 
-    public void setActores(ListaEnlazada<Actor> actores) {
-        this.actores = actores;
+    public ListaEnlazada<Actor> getActores() {
+        return actores;
+    }
+
+    public ListaEnlazada<Evaluacion> getEvaluaciones() {
+        return evaluaciones;
     }
 
     public int calificacionMedia()  {
@@ -110,7 +114,7 @@ public class Pelicula implements Comparable<Pelicula>{
     public int compareTo(Pelicula pelicula) { //mejor calificacion
         int valor=-1;
         if(this.calificacionMedia()== pelicula.calificacionMedia()){
-           valor=0;
+            valor=0;
         }else if(this.calificacionMedia()>pelicula.calificacionMedia()){
             valor=1; //mejor clasificacion esta que la otra
         }
