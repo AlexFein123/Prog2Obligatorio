@@ -9,8 +9,8 @@ public class Usuario extends Persona implements Comparable<Usuario> {
 
     private ListaEnlazada<Evaluacion> evaluaciones;
 
-    public Usuario(double id, String nombre) {
-        super(id, nombre);
+    public Usuario(double id) {
+        super(id);
         this.evaluaciones = new ListaEnlazada<>();
     }
 
