@@ -3,6 +3,7 @@ package um.edu.uy;
 import java.util.Scanner;
 
 import um.edu.uy.entities.Usuario;
+import um.edu.uy.tads.HashTableAbierta;
 import um.edu.uy.tads.ListaEnlazada;
 
 public class Main {
@@ -21,7 +22,9 @@ public class Main {
             switch (opcion) {
                 case "1":
                     long inicioCarga = System.currentTimeMillis();
-                    ListaEnlazada<Usuario> usuarios = CargadorCSV.cargarUsuarios("./ratings_1mm.csv");
+                    HashTableAbierta<Usuario,Usuario> Hashusuarios = null;
+                    CargadorCSV.cargarUsuarios(Hashusuarios);
+                    Hashusuarios.
 
                     long finCarga = System.currentTimeMillis();
                     System.out.println("Carga de datos exitosa, tiempo de ejecución de la carga: " + (finCarga - inicioCarga) + " ms");

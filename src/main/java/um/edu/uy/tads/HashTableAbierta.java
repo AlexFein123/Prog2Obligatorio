@@ -25,8 +25,8 @@ public class HashTableAbierta<K, T> implements HashTable<K, T> {
         for (int i = 0; i < lista.tamanio(); i++) {
             try {
                 NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                if (nodo.getKey().equals(clave)) {
-                    nodo.setValue(valor);
+                if (nodo.getClave().equals(clave)) {
+                    nodo.setValor(valor);
                     return;
                 }
             } catch (Exception e) {
@@ -40,15 +40,15 @@ public class HashTableAbierta<K, T> implements HashTable<K, T> {
     }
 
     @Override
-    public T remover(K clave) {
+    public NodoHash borrar(K clave) {
         int posicion = funcionHash(clave);
         ListaEnlazada<NodoHash<K, T>> lista = tabla[posicion];
 
         for (int i = 0; i < lista.tamanio(); i++) {
             try {
                 NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                if (nodo.getKey().equals(clave)) {
-                    T valor = nodo.getValue();
+                if (nodo.getClave().equals(clave)) {
+                    NodoHash<K,T> valor = (NodoHash<K, T>) nodo.getValor();
                     lista.remover(i);
                     elementos--;
                     return valor;
@@ -69,8 +69,8 @@ public class HashTableAbierta<K, T> implements HashTable<K, T> {
         for (int i = 0; i < lista.tamanio(); i++) {
             try {
                 NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                if (nodo.getKey().equals(clave)) {
-                    return nodo.getValue();
+                if (nodo.getClave().equals(clave)) {
+                    return nodo.getValor();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -81,7 +81,7 @@ public class HashTableAbierta<K, T> implements HashTable<K, T> {
     }
 
     @Override
-    public int size() {
+    public int tamanio() {
         return elementos;
     }
 

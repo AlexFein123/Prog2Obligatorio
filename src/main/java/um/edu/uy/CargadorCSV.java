@@ -15,7 +15,7 @@ import um.edu.uy.tads.ListaEnlazada;
 
 public class CargadorCSV {
 
-    public static void cargarUsuarios(HashTableAbierta<Usuario,Usuario>Hashusuarios) {
+    public static void cargarUsuarios(HashTableAbierta<Usuario, Usuario> Hashusuarios) {
         Path path = Paths.get(System.getProperty("ratings_1mm.csv"));
 
         try (java.io.BufferedReader br = Files.newBufferedReader(path)) {
@@ -33,7 +33,7 @@ public class CargadorCSV {
                 try {
                     int id = Integer.parseInt(partes[0].trim());
                     Usuario usuario = new Usuario(id);
-                    Hashusuarios.agregar(usuario,usuario);
+                    Hashusuarios.agregar(usuario, usuario);
 
                 } catch (NumberFormatException e) {
                     System.err.println("Línea con id no numérico: " + partes[0]);
@@ -46,7 +46,8 @@ public class CargadorCSV {
         }
 
     }
-    public static void CargarPeliculas(HashTableAbierta<Pelicula,Pelicula>HashPeliculas) {
+
+    public static void CargarPeliculas(HashTableAbierta<Pelicula, Pelicula> HashPeliculas) {
         Path path = Paths.get(System.getProperty("ratings_1mm.csv"));
         int id;
         String titulo;
@@ -70,9 +71,9 @@ public class CargadorCSV {
 
                 String[] partes = linea.split(",");
                 try {
-                   // int id = Integer.parseInt(partes[0].trim());
-                   // Pelicula pelicula = new Usuario(id);
-                   // HashPeliculas.agregar(pelicula,pelicula);
+                    // int id = Integer.parseInt(partes[0].trim());
+                    // Pelicula pelicula = new Usuario(id);
+                    // HashPeliculas.agregar(pelicula,pelicula);
 
                 } catch (NumberFormatException e) {
                     System.err.println("Línea con id no numérico: " + partes[0]);
@@ -85,3 +86,4 @@ public class CargadorCSV {
         }
 
     }
+}

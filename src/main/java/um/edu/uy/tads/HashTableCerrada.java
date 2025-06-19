@@ -31,8 +31,8 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
         try {
             for (int i = 0; i < lista.tamanio(); i++) {
                 NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                if (nodo.getKey().equals(key)) {
-                    nodo.setValue(value);
+                if (nodo.getClave().equals(key)) {
+                    nodo.setValor(value);
                     return;
                 }
             }
@@ -54,8 +54,8 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
             try {
                 for (int i = 0; i < lista.tamanio(); i++) {
                     NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                    if (nodo.getKey().equals(key)) {
-                        return nodo.getValue();
+                    if (nodo.getClave().equals(key)) {
+                        return nodo.getValor();
                     }
                 }
             } catch (FueraDeRango e) {
@@ -67,7 +67,7 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
     }
 
     @Override
-    public T remover(K key) {
+    public NodoHash borrar(K key) {
         int posicion = Math.abs(key.hashCode()) % entryArray.length;
         ListaEnlazada<NodoHash<K, T>> lista = entryArray[posicion];
 
@@ -75,10 +75,10 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
             try {
                 for (int i = 0; i < lista.tamanio(); i++) {
                     NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                    if (nodo.getKey().equals(key)) {
+                    if (nodo.getClave().equals(key)) {
                         lista.remover(i);
                         size--;
-                        return nodo.getValue();
+                        return (NodoHash) nodo.getValor();
                     }
                 }
             } catch (FueraDeRango e) {
@@ -90,7 +90,7 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
     }
 
     @Override
-    public int size() {
+    public int tamanio() {
         return size;
     }
 
@@ -102,7 +102,7 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
                 try {
                     for (int i = 0; i < lista.tamanio(); i++) {
                         NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                        valores.agregarOrdenado(nodo.getValue());
+                        valores.agregarOrdenado(nodo.getValor());
                     }
                 } catch (FueraDeRango e) {
                     e.printStackTrace();
@@ -113,6 +113,25 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
         return valores;
     }
 
+    public T[] getValuesArray() {
+        T[] array = (T[]) new Object[size];
+        int pos = 0;
+
+        for (ListaEnlazada<NodoHash<K, T>> lista : entryArray) {
+            if (lista != null) {
+                try {
+                    for (int i = 0; i < lista.tamanio(); i++) {
+                        NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
+                        array[pos++] = nodo.getValor();
+                    }
+                } catch (FueraDeRango e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return array;
+    }
 
     private void reHashing() {
         int nuevaCapacidad = getNextPrimeNumber(entryArray.length * 2);
@@ -125,7 +144,7 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
                 try {
                     for (int i = 0; i < lista.tamanio(); i++) {
                         NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
-                        agregar(nodo.getKey(), nodo.getValue());
+                        agregar(nodo.getClave(), nodo.getValor());
                     }
                 } catch (FueraDeRango e) {
                     e.printStackTrace();
@@ -150,3 +169,4 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
         return true;
     }
 }
+

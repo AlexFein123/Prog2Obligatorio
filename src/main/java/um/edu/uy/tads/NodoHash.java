@@ -4,13 +4,13 @@ package um.edu.uy.tads;
 public class NodoHash<K,T> {
     private K clave;
     private T valor;
-    private NodoHash<K,T> siguiente;
+    private NodoHash<K, T> siguiente;
 
 
     public NodoHash(K clave, T valor) {
         this.clave = clave;
         this.valor = valor;
-        this.siguiente=null;
+        this.siguiente = null;
     }
 
     public K getClave() {
@@ -35,13 +35,6 @@ public class NodoHash<K,T> {
 
     public void setSiguiente(NodoHash<K, T> siguiente) {
         this.siguiente = siguiente;
-           
-    public boolean equals(Object obj) {
-        boolean equalToReturn = false;
-        if (obj instanceof NodoHash) {
-            equalToReturn = this.key.equals(((NodoHash) obj).getKey());
-        }
-        return equalToReturn;
 
     }
 }
