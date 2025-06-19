@@ -35,5 +35,13 @@ public class NodoHash<K,T> {
 
     public void setSiguiente(NodoHash<K, T> siguiente) {
         this.siguiente = siguiente;
+           
+    public boolean equals(Object obj) {
+        boolean equalToReturn = false;
+        if (obj instanceof NodoHash) {
+            equalToReturn = this.key.equals(((NodoHash) obj).getKey());
+        }
+        return equalToReturn;
+
     }
 }
