@@ -9,7 +9,6 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         // SistemaUMovie sistema = new SistemaUMovie();
-        System.out.println("Directorio actual: " + System.getProperty("user.dir"));
 
         while (true) {
             System.out.println("Seleccione la opción que desee:");

@@ -3,16 +3,19 @@ package um.edu.uy;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 
+import um.edu.uy.entities.Actor;
+import um.edu.uy.entities.Director;
 import um.edu.uy.entities.Pelicula;
 import um.edu.uy.entities.Usuario;
+import um.edu.uy.tads.HashTableAbierta;
 import um.edu.uy.tads.ListaEnlazada;
 
 public class CargadorCSV {
 
-    public static ListaEnlazada<Usuario> cargarUsuarios(String rutaArchivo) {
-        ListaEnlazada<Usuario> usuarios = new ListaEnlazada<>();
-        Path path = Paths.get(System.getProperty("user.dir")).resolve(rutaArchivo);
+    public static void cargarUsuarios(HashTableAbierta<Usuario,Usuario>Hashusuarios) {
+        Path path = Paths.get(System.getProperty("ratings_1mm.csv"));
 
         try (java.io.BufferedReader br = Files.newBufferedReader(path)) {
             String linea;
@@ -28,7 +31,8 @@ public class CargadorCSV {
                 String[] partes = linea.split(",");
                 try {
                     int id = Integer.parseInt(partes[0].trim());
-                    usuarios.agregarOrdenado(new Usuario(id));
+                    Usuario usuario = new Usuario(id);
+                    Hashusuarios.agregar(usuario,usuario);
 
                 } catch (NumberFormatException e) {
                     System.err.println("Línea con id no numérico: " + partes[0]);
@@ -40,11 +44,17 @@ public class CargadorCSV {
             e.printStackTrace();
         }
 
-        return usuarios;
     }
-    public static ListaEnlazada<Pelicula> CargarPeliculas(String rutaArchivo) {
-        ListaEnlazada<Pelicula> Pelicula = new ListaEnlazada<>();
-        Path path = Paths.get(System.getProperty("user.dir")).resolve(rutaArchivo);
+    public static void CargarPeliculas(HashTableAbierta<Pelicula,Pelicula>HashPeliculas) {
+        Path path = Paths.get(System.getProperty("ratings_1mm.csv"));
+        int id;
+        String titulo;
+        String genero;
+        String idiomaOriginal;
+        long ingreso;
+        LocalDate fecha;
+        ListaEnlazada<Actor> actores;
+        Director director;
 
         try (java.io.BufferedReader br = Files.newBufferedReader(path)) {
             String linea;
@@ -59,8 +69,9 @@ public class CargadorCSV {
 
                 String[] partes = linea.split(",");
                 try {
-                    int id = Integer.parseInt(partes[0].trim());
-                    // Pelicula.agregarOrdenado(new Pelicula(id));
+                   // int id = Integer.parseInt(partes[0].trim());
+                   // Pelicula pelicula = new Usuario(id);
+                   // HashPeliculas.agregar(pelicula,pelicula);
 
                 } catch (NumberFormatException e) {
                     System.err.println("Línea con id no numérico: " + partes[0]);
@@ -72,6 +83,5 @@ public class CargadorCSV {
             e.printStackTrace();
         }
 
-        return Pelicula;
     }
 }
