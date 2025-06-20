@@ -125,4 +125,11 @@ public class Pelicula implements Comparable<Pelicula>{
 
     }
 
+    public void aregarEvaluacion (Evaluacion evalacionAregada){
+        evaluaciones.agregarAlFinal(evalacionAregada);
+    }
+
+    public int cantidadDeEvaluacione(){
+        return evaluaciones.tamanio();
+    }
 }

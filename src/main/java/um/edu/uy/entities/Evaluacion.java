@@ -7,7 +7,7 @@ public class Evaluacion {
     private String fecha;
 
     public Evaluacion (Pelicula pelicula,Usuario user, int clasificacion, String fecha){
-        this.pelicula =pelicula;
+        this.pelicula = pelicula;
         this.user = new Usuario(user.getId());
         this.clasificacion = clasificacion;
         this.fecha = fecha;

@@ -74,6 +74,10 @@ public class Heap<T extends Comparable<T>> implements TADHeap<T> {
         }
     }
 
+    public boolean isEmpty(){
+        return tamaño == 0;
+    }
+
     private boolean comparar(T a, T b) {
         return esMinimo ? a.compareTo(b) < 0 : a.compareTo(b) > 0;
     }

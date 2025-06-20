@@ -24,7 +24,6 @@ public class Main {
                     long inicioCarga = System.currentTimeMillis();
                     HashTableAbierta<Usuario,Usuario> Hashusuarios = null;
                     CargadorCSV.cargarUsuarios(Hashusuarios);
-                    Hashusuarios.
 
                     long finCarga = System.currentTimeMillis();
                     System.out.println("Carga de datos exitosa, tiempo de ejecución de la carga: " + (finCarga - inicioCarga) + " ms");
