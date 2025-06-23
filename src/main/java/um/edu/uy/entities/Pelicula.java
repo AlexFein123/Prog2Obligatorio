@@ -28,7 +28,7 @@ public class Pelicula implements Comparable<Pelicula>{
         this.director = director;
     }
 
-    public int cantidadDeEvaluacione(){
+    public int cantidadDeEvaluaciones(){
         return evaluaciones.tamanio();
     }
     public int getId() {

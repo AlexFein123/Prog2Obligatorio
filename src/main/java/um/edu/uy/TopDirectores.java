@@ -15,10 +15,11 @@ public class TopDirectores {
         this.directorHash = directorHash ;
     }
 
-    public Director[] top10MejorCalificacionMedia() {
+
+    public String top10MejorCalificacionMedia() {
         Director[] directorArray = directorHash.getValuesArray();
 
-        if(directorArray.length<10){
+        if (directorArray.length < 10) {
             System.out.println("No hay suficientes directors");
             return null;
         }
@@ -27,8 +28,8 @@ public class TopDirectores {
 
         Heap<Director> heapCalificacionesDirector = new Heap<>(directorArray.length, false);
         for (Director director : directorArray) {
-            ListaEnlazada<Pelicula> peliculas =director.getPeliculasdelDirector();
-            if(peliculas.tamanio()>1 && director.totalEvaluaciones()>100){
+            ListaEnlazada<Pelicula> peliculas = director.getPeliculasdelDirector();
+            if (peliculas.tamanio() > 1 && director.totalEvaluaciones() > 100) {
                 heapCalificacionesDirector.agregar(director);
             }
         }
@@ -36,27 +37,13 @@ public class TopDirectores {
         for (int i = 0; i < 10; i++) {
             top10[i] = heapCalificacionesDirector.obtenerYEliminar();
         }
-        return top10;
-    }
-
-    @Override
-    public String toString(){
-        Director[] directores= top10MejorCalificacionMedia();
-        if (directores.length==0){
-            System.out.println("no hay directores disponibles");
-        }
-        String resultado="TOP 10 DIRECTORES POR CALIFICACIÓN:\n" +
-                "------------------------------------\n";
-        for (int directorPos=0;directorPos<directores.length;directorPos++){
-            Director director= directores[directorPos];
-            resultado+= (directorPos+ 1) + "- " + director.toString()+"\n";
+        String resultado="TOP 10 DIRECTORES POR CALIFICACIÓN:" +"\n" +
+                "------------------------------------+" +"\n";
+        for (int directorPos=0;directorPos<top10.length;directorPos++){
+            Director director= top10[directorPos];
+            resultado+= (directorPos+ 1) + "- " + director.toString()+ "\n";
         }
         return resultado;
     }
-
-
-
-
-
 
 }
