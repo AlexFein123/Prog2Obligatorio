@@ -28,7 +28,9 @@ public class Pelicula implements Comparable<Pelicula>{
         this.director = director;
     }
 
-
+    public int cantidadDeEvaluacione(){
+        return evaluaciones.tamanio();
+    }
     public int getId() {
         return id;
     }
@@ -124,5 +126,7 @@ public class Pelicula implements Comparable<Pelicula>{
                 "Calificación media: "+ calificacionMedia()+ "/n";
 
     }
+
+
 
 }
