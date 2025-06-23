@@ -267,5 +267,9 @@ public class ListaEnlazada<T> implements ListaTad<T> {
         }
     }
 
+    public boolean isEmpty(){
+        return size == 0;
+    }
+
 
 }
