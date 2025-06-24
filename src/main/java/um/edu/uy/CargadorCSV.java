@@ -11,12 +11,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import um.edu.uy.entities.Pelicula;
-import um.edu.uy.entities.Director;
+
+import um.edu.uy.entities.*;
+import um.edu.uy.tads.HashTableAbierta;
 import um.edu.uy.tads.HashTableCerrada;
 
-import um.edu.uy.entities.Evaluacion;
-import um.edu.uy.entities.Usuario;
 import um.edu.uy.exceptions.FueraDeRango;
 import um.edu.uy.tads.ListaEnlazada;
 
@@ -119,7 +118,67 @@ public class CargadorCSV {
             e.printStackTrace();
         }
     }
-}
+
+    public static void cargarCreditos(
+            HashTableCerrada<Integer, Pelicula> peliculas,
+            HashTableAbierta<String, Actor> actoresGlobal
+    ){
+        Path path = Paths.get("credits.csv");
+        try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))){
+            String linea;
+            boolean primera = true;
+
+            while((linea = br.readLine()) != null){
+                if(primera){
+                    primera = false;
+                    continue;
+                }
+                String[] partes = parseCSVLine(linea);
+
+                if (partes.length < 3) continue;
+
+                int idPelicula;
+                try {
+                    idPelicula = Integer.parseInt(partes[0]);
+                } catch (NumberFormatException e){
+                    continue;
+                }
+                Pelicula peli = peliculas.obtener(idPelicula);
+                if (peli == null) continue;
+
+                String listaActores = partes[1];
+
+                listaActores = listaActores.replace("[", "").replace("]", "").replace("{", "").replace("}", "");
+                String[] items = listaActores.split("},\\s*\\{");
+
+                for(String item : items){
+                    if (!item.contains("name")) continue;
+
+                    int idx = item.indexOf("name =");
+                    if (idx == -1) continue;
+
+                    String[] partesActor =item.substring(idx).split(":");
+                    if (partesActor.length < 2) continue;
+
+                    String nombre = partesActor[1].replace("'", "").replace("\"", "").trim();
+                    if(nombre.isEmpty()) continue;
+                    Actor actor = actoresGlobal.obtener(nombre);
+
+                    if(actor == null){
+                        actor = new Actor(Math.random(), nombre);
+                        actoresGlobal.agregar(nombre, actor);
+                    }
+
+                    actor.agregarPelicula(peli);
+
+                    peli.getActores().agregar(actor);
+                }
+            }
+        } catch(IOException e){
+            System.err.println("Error leyendo archivo credits.csv: " + e.getMessage());
+        }
+    }
+
 
 
 
@@ -170,5 +229,5 @@ public class CargadorCSV {
 
         return resultado;
     }
-
 }
+
