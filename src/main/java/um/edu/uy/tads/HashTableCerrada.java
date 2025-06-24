@@ -41,7 +41,7 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
         }
 
         NodoHash<K, T> nuevo = new NodoHash<>(key, value);
-        lista.agregarOrdenado(nuevo);
+        lista.agregarAlFinal(nuevo);
         size++;
     }
 
@@ -167,6 +167,9 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
             if (numero % i == 0) return false;
         }
         return true;
+    }
+    public int getCapacidad() {
+        return entryArray.length;
     }
 }
 

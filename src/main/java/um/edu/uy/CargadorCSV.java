@@ -1,146 +1,174 @@
-
 package um.edu.uy;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import um.edu.uy.entities.Pelicula;
+import um.edu.uy.entities.Director;
+import um.edu.uy.tads.HashTableCerrada;
 
-import um.edu.uy.entities.*;
-import um.edu.uy.tads.HashTableAbierta;
+import um.edu.uy.entities.Evaluacion;
+import um.edu.uy.entities.Usuario;
+import um.edu.uy.exceptions.FueraDeRango;
 import um.edu.uy.tads.ListaEnlazada;
 
 public class CargadorCSV {
 
-    public static void cargarUsuarios(HashTableAbierta<Usuario, Usuario> Hashusuarios) {
-        Path path = Paths.get(System.getProperty("ratings_1mm.csv"));
+    public static void cargarUsuariosYEvaluaciones(
+            HashTableCerrada<Integer, Usuario> usuarios,
+            HashTableCerrada<Integer, Pelicula> peliculas,
+            ListaEnlazada<Evaluacion> evaluaciones
+    ) {
+        Path path = Paths.get(System.getProperty("user.dir")).resolve("./ratings_1mm.csv");
 
-        try (java.io.BufferedReader br = Files.newBufferedReader(path)) {
-            String linea;
-            boolean primeraLinea = true;
-            int i = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+            String linea = br.readLine(); // Encabezado
+
             while ((linea = br.readLine()) != null) {
-                i++;
-                if (primeraLinea) {
-                    primeraLinea = false;
+                String[] partes = linea.split(",");
+
+                int idUsuario = Integer.parseInt(partes[0]);
+                int idPelicula = Integer.parseInt(partes[1]);
+                float rating = Float.parseFloat(partes[2]);
+                long timestamp = Long.parseLong(partes[3]);
+                LocalDate fecha = Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
+
+                // Obtener o crear usuario
+                Usuario user = usuarios.obtener(idUsuario);
+                if (user == null) {
+                    user = new Usuario(idUsuario);
+                    usuarios.agregar(idUsuario, user);
+                }
+
+                // Obtener película real desde tabla
+                Pelicula pelicula = peliculas.obtener(idPelicula);
+                if (pelicula == null) {
+                    // Si no se encuentra, se ignora la evaluación
                     continue;
                 }
 
-                String[] partes = linea.split(",");
-                try {
-                    int id = Integer.parseInt(partes[0].trim());
-                    Usuario usuario = new Usuario(id);
-                    Hashusuarios.agregar(usuario, usuario);
-
-                } catch (NumberFormatException e) {
-                    System.err.println("Línea con id no numérico: " + partes[0]);
-                }
+                Evaluacion evaluacion = new Evaluacion(pelicula, user, rating, fecha);
+                evaluaciones.agregarAlFinal(evaluacion);
+                pelicula.getEvaluaciones().agregarAlFinal(evaluacion);
             }
-
-        } catch (Exception e) {
-            System.err.println("Error leyendo archivo CSV: " + e.getMessage());
-            e.printStackTrace();
+        } catch (IOException e) {
+            System.err.println("Error al leer archivo de evaluaciones: " + e.getMessage());
         }
-
     }
 
-    public static void CargarPeliculas(HashTableAbierta<Pelicula, Pelicula> HashPeliculas) {
+    public static void cargarPeliculas(HashTableCerrada<Pelicula, Pelicula> hashPeliculas) {
+        String archivo = "movies_metadata.csv";
 
-
-        Path pathPeliculas = Paths.get("movies_metadata.csv");
-
-        try (BufferedReader br = Files.newBufferedReader(pathPeliculas)) {
-            String linea;
+        try (CSVReader reader = new CSVReader(new FileReader(archivo))) {
+            List<String[]> lineas = reader.readAll();
             boolean primeraLinea = true;
 
-            while ((linea = br.readLine()) != null) {
+            for (String[] partes : lineas) {
                 if (primeraLinea) {
                     primeraLinea = false;
                     continue;
                 }
 
-                String[] partes = linea.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
+                if (partes.length < 21) {
+                    continue;
+                }
 
                 try {
-                    int id = Integer.parseInt(partes[0].trim());
-                    String titulo = partes[1].trim();
-                    String genero = partes[2].trim();
-                    String idiomaOriginal = partes[3].trim();
+                    int id = Integer.parseInt(partes[5].trim());
+                    String titulo = partes[20].trim();
+                    String genero = partes[3].trim();
+                    String idiomaOriginal = partes[7].trim();
 
                     long ingreso = 0;
-                    if (!partes[4].trim().isEmpty()) {
-                        ingreso = Long.parseLong(partes[4].trim());
+                    if (!partes[14].trim().isEmpty()) {
+                        try {
+                            ingreso = Long.parseLong(partes[14].trim());
+                        } catch (NumberFormatException e) {
+                            ingreso = 0;
+                        }
                     }
-
 
                     LocalDate fecha = null;
-                    try {
-                        if (!partes[5].trim().isEmpty()) {
-                            fecha = LocalDate.parse(partes[5].trim());
+                    if (!partes[12].trim().isEmpty()) {
+                        try {
+                            fecha = LocalDate.parse(partes[12].trim());
+                        } catch (Exception e) {
+                            // ignorar error de fecha
                         }
-                    } catch (Exception e) {
-                        fecha = null;
                     }
 
-                    Director director = null;
+                    Director director = null; // dejar para más adelante
+                    Pelicula pelicula = new Pelicula(id, titulo, genero, idiomaOriginal, ingreso, fecha, director);
+                    hashPeliculas.agregar(pelicula, pelicula);
 
-
-                    Pelicula peli = new Pelicula(id, titulo, genero, idiomaOriginal, ingreso, fecha, director);
-
-
-                    HashPeliculas.agregar(id, peli);
-
-                } catch (NumberFormatException e) {
-                    System.err.println("Línea con ID o ingreso inválido: " + linea);
                 } catch (Exception e) {
-                    System.err.println("Error al procesar película: " + linea);
-                    e.printStackTrace();
-                }
-            }
-
-        } catch (IOException e) {
-            System.err.println("Error leyendo movies_metadata.csv: " + e.getMessage());
-        }
-
-        int id;
-        String titulo;
-        String genero;
-        String idiomaOriginal;
-        long ingreso;
-        LocalDate fecha;
-        ListaEnlazada<Actor> actores;
-        Director director;
-
-        Path path = Paths.get(System.getProperty("ratings_1mm.csv"));
-
-        try (java.io.BufferedReader br = Files.newBufferedReader(path)) {
-            String linea;
-            boolean primeraLinea = true;
-            int i = 0;
-            while ((linea = br.readLine()) != null) {
-                i++;
-                if (primeraLinea) {
-                    primeraLinea = false;
-                    continue;
-                }
-
-                String[] partes = linea.split(",");
-                try {
-                    // int id = Integer.parseInt(partes[0].trim());
-                    // Pelicula pelicula = new Usuario(id);
-                    // HashPeliculas.agregar(pelicula,pelicula);
-
-                } catch (NumberFormatException e) {
-                    System.err.println("Línea con id no numérico: " + partes[0]);
+                    // ignorar errores por línea corrupta
                 }
             }
 
         } catch (Exception e) {
-            System.err.println("Error leyendo archivo CSV: " + e.getMessage());
+            System.err.println("Error leyendo CSV con OpenCSV:");
             e.printStackTrace();
         }
-
     }
+}
+
+
+
+    public static Pelicula obtenerPeliculaPorId(int id, HashTableCerrada<Integer, Pelicula> peliculas) {
+        return peliculas.obtener(id);
+    }
+
+    private static String[] parseCSVLine(String linea) {
+        if (linea == null || linea.isEmpty()) {
+            return new String[0];
+        }
+
+        ListaEnlazada<String> campos = new ListaEnlazada<>();
+        StringBuilder campo = new StringBuilder();
+        boolean enComillas = false;
+
+        for (int i = 0; i < linea.length(); i++) {
+            char c = linea.charAt(i);
+
+            if (c == '"') {
+                // Si estamos en comillas y la siguiente es también comilla, es comilla escapada
+                if (enComillas && i + 1 < linea.length() && linea.charAt(i + 1) == '"') {
+                    campo.append('"'); // Agrego comilla escapada
+                    i++; // salto la siguiente comilla
+                } else {
+                    enComillas = !enComillas; // cambio estado de comillas
+                }
+            } else if (c == ',' && !enComillas) {
+                // Fin del campo si no estamos en comillas
+                campos.agregarAlFinal(campo.toString());
+                campo.setLength(0);
+            } else {
+                campo.append(c);
+            }
+        }
+        // Agrego último campo
+        campos.agregarAlFinal(campo.toString());
+
+        // Paso la lista enlazada a arreglo String[]
+        String[] resultado = new String[campos.tamanio()];
+        for (int i = 0; i < campos.tamanio(); i++) {
+            try {
+                resultado[i] = campos.obtenervalorposicion(i);
+            } catch (FueraDeRango e) {
+                resultado[i] = "";
+            }
+        }
+
+        return resultado;
+    }
+
 }

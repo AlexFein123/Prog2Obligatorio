@@ -1,8 +1,9 @@
 package um.edu.uy.entities;
 
+import um.edu.uy.exceptions.FueraDeRango;
 import um.edu.uy.tads.ListaEnlazada;
 
-public class Saga { //Nota de github, para subir al repositorio primero se tiene que hacer un commit para aniadir a la rama y luego el push para el github
+public class Saga implements Comparable<Saga> {
     private int id;
     private String nombre;
     private ListaEnlazada<Pelicula> peliculas;
@@ -36,4 +37,44 @@ public class Saga { //Nota de github, para subir al repositorio primero se tiene
     public void setId(int id) {
         this.id = id;
     }
+
+    public long sumaIngreso() {
+        long ingresoSaga=0;
+        for (int enPeliculas = 0; enPeliculas < peliculas.tamanio(); enPeliculas++) {
+            try {
+                Pelicula pelicula = peliculas.obtenervalorposicion(enPeliculas);
+                ingresoSaga+= pelicula.getIngreso();
+            } catch (FueraDeRango e) {
+                throw new IllegalStateException("no puede ser mayor el rango");
+            }
+        }
+        return ingresoSaga;
+    }
+
+    @Override
+    public int compareTo(Saga saga) {
+        int resultado=-1;
+        if (this.sumaIngreso()==saga.sumaIngreso()){
+            resultado= 0;
+        }
+        if (this.sumaIngreso()>saga.sumaIngreso()){
+             resultado= 1;
+        }
+        return resultado;
+    }
+    @Override
+    public String toString() {
+        String resultado= "Saga: " + "id= " + id + '\n'+
+                ", nombre=" + nombre + '\n'+
+                "cantidad de peliculas= " + peliculas.tamanio()+ '\n'
+                + "id peliculas= ";
+
+        for (Pelicula pelicula: peliculas){
+            resultado+= pelicula.getId() +",";
+                }
+        return resultado+='\n' +
+                "ingreso generados= " + sumaIngreso();
+    }
+
 }
+

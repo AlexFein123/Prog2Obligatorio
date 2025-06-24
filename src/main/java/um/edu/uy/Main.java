@@ -2,8 +2,11 @@ package um.edu.uy;
 
 import java.util.Scanner;
 
+import um.edu.uy.entities.Evaluacion;
+import um.edu.uy.entities.Pelicula;
 import um.edu.uy.entities.Usuario;
 import um.edu.uy.tads.HashTableAbierta;
+import um.edu.uy.tads.HashTableCerrada;
 import um.edu.uy.tads.ListaEnlazada;
 
 public class Main {
@@ -21,13 +24,30 @@ public class Main {
 
             switch (opcion) {
                 case "1":
-                    long inicioCarga = System.currentTimeMillis();
-                    HashTableAbierta<Usuario,Usuario> Hashusuarios = null;
-                    CargadorCSV.cargarUsuarios(Hashusuarios);
+                    try {
+                        long inicioCarga = System.currentTimeMillis();
 
-                    long finCarga = System.currentTimeMillis();
-                    System.out.println("Carga de datos exitosa, tiempo de ejecución de la carga: " + (finCarga - inicioCarga) + " ms");
+                        HashTableCerrada<Integer, Usuario> hashUsuarios = new HashTableCerrada<>(100_000);
+                        HashTableCerrada<Integer, Pelicula> hashPeliculas = new HashTableCerrada<>(100_000);
+                        ListaEnlazada<Evaluacion> listaEvaluaciones = new ListaEnlazada<>();
+                        CargadorCSV.cargarPeliculas(hashPeliculas);
+                        CargadorCSV.cargarUsuariosYEvaluaciones(hashUsuarios, hashPeliculas, listaEvaluaciones);
+
+                        System.out.println("Capacidad de la tabla hash usuarios: " + hashUsuarios.getCapacidad());
+                        System.out.println("Cantidad de usuarios cargados: " + hashUsuarios.tamanio());
+
+                        System.out.println("Películas cargadas: " + hashPeliculas.tamanio());
+                        System.out.println("Evaluaciones cargadas: " + listaEvaluaciones.tamanio());
+
+                        long finCarga = System.currentTimeMillis();
+                        System.out.println("Carga de datos exitosa, tiempo de ejecución de la carga: " + (finCarga - inicioCarga) + " ms");
+
+                    } catch (Exception e) {
+                        System.err.println("Error durante la carga de datos:");
+                        e.printStackTrace();
+                    }
                     break;
+
                 case "2":
                     ejecutarConsultas(scanner);
                     break;

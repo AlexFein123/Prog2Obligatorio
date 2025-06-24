@@ -1,12 +1,14 @@
 package um.edu.uy.entities;
 
+import java.time.LocalDate;
+
 public class Evaluacion {
     private Pelicula pelicula;
     private Usuario user;
-    private int clasificacion;
-    private String fecha;
+    private float clasificacion;
+    private LocalDate fecha;
 
-    public Evaluacion (Pelicula pelicula,Usuario user, int clasificacion, String fecha){
+    public Evaluacion (Pelicula pelicula,Usuario user, float clasificacion, LocalDate fecha){
         this.pelicula = pelicula;
         this.user = new Usuario(user.getId());
         this.clasificacion = clasificacion;
@@ -25,21 +27,17 @@ public class Evaluacion {
         this.user = user;
     }
 
-    public int getClasificacion() {
+    public float getClasificacion() {
         return clasificacion;
     }
 
-    public void setClasificacion(int clasificacion) {
+    public void setClasificacion(float clasificacion) {
         this.clasificacion = clasificacion;
     }
 
-    public String getFecha() {
-        return fecha;
-    }
+    public LocalDate getFecha() {return fecha;  }
 
-    public void setFecha(String fecha) {
+    public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
-
-
 }

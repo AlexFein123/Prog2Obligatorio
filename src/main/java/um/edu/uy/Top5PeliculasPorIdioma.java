@@ -3,7 +3,6 @@ package um.edu.uy;
 import um.edu.uy.entities.Pelicula;
 import um.edu.uy.tads.HashTableCerrada;
 import um.edu.uy.tads.Heap;
-import um.edu.uy.entities.Pelicula;
 
 public class Top5PeliculasPorIdioma {
     HashTableCerrada<Integer, Pelicula> listaPeliculas;
@@ -28,7 +27,7 @@ public class Top5PeliculasPorIdioma {
             System.out.println("Top 5 para");
             for (int i = 0; i < 5 && !heapDePelis.isEmpty(); i++){
                 Pelicula top = heapDePelis.obtenerYEliminar();
-                System.out.println(top.getId() + ", " + top.getTitulo() + ", " + top.cantidadDeEvaluacione() + ", " + idioma);
+                System.out.println(top.getId() + ", " + top.getTitulo() + ", " + top.cantidadDeEvaluaciones() + ", " + idioma);
 
             }
         }
