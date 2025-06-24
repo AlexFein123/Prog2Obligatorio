@@ -35,10 +35,16 @@ public class ListaEnlazada<T> implements ListaTad<T> {
 
     @Override
     public void agregarAlFinal(T valor) {
-        this.agregarOrdenado(valor);  // ¿Seguro que debe ser ordenado? Si no, esto está mal.
+        Nodo<T> nuevoNodo = new Nodo<T>(valor);
+        if (inicio == null) {
+            inicio = nuevoNodo;
+            ultimo = nuevoNodo;
+        } else {
+            ultimo.setSiguiente(nuevoNodo);
+            ultimo = nuevoNodo;
+        }
         size++;
     }
-
     @Override
     public void agregarOrdenado(T valor) {
         if (!(valor instanceof Comparable)) {
