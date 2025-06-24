@@ -271,5 +271,17 @@ public class ListaEnlazada<T> implements ListaTad<T> {
         return size == 0;
     }
 
+    public void agregar(T valor) {
+        Nodo<T> nuevo = new Nodo<>(valor);
+        if (inicio == null) {
+            inicio = nuevo;
+            ultimo = nuevo;
+        } else {
+            ultimo.setSiguiente(nuevo);
+            ultimo = nuevo;
+        }
+        size++;
+    }
+
 
 }
