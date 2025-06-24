@@ -27,17 +27,17 @@ public class Main {
                     try {
                         long inicioCarga = System.currentTimeMillis();
 
-                        HashTableCerrada<Usuario, Usuario> hashUsuarios = new HashTableCerrada<>(10000000);
-                        HashTableCerrada<Evaluacion, Evaluacion> hashEvaluaciones = new HashTableCerrada<>(100_000);
-                        HashTableCerrada<Pelicula, Pelicula> hashPeliculas = new HashTableCerrada<>(100_000);
-                        //CargadorCSV.cargarPeliculas(hashPeliculas);
-                        CargadorCSV.cargarUsuarios(hashUsuarios, hashEvaluaciones, hashPeliculas);
+                        HashTableCerrada<Integer, Usuario> hashUsuarios = new HashTableCerrada<>(100_000);
+                        HashTableCerrada<Integer, Pelicula> hashPeliculas = new HashTableCerrada<>(100_000);
+                        ListaEnlazada<Evaluacion> listaEvaluaciones = new ListaEnlazada<>();
+                        CargadorCSV.cargarPeliculas(hashPeliculas);
+                        CargadorCSV.cargarUsuariosYEvaluaciones(hashUsuarios, hashPeliculas, listaEvaluaciones);
 
                         System.out.println("Capacidad de la tabla hash usuarios: " + hashUsuarios.getCapacidad());
                         System.out.println("Cantidad de usuarios cargados: " + hashUsuarios.tamanio());
 
                         System.out.println("Películas cargadas: " + hashPeliculas.tamanio());
-                        System.out.println("Evaluaciones cargadas: " + hashEvaluaciones.tamanio());
+                        System.out.println("Evaluaciones cargadas: " + listaEvaluaciones.tamanio());
 
                         long finCarga = System.currentTimeMillis();
                         System.out.println("Carga de datos exitosa, tiempo de ejecución de la carga: " + (finCarga - inicioCarga) + " ms");

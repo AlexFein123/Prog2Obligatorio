@@ -3,7 +3,9 @@ package um.edu.uy.tads;
 import um.edu.uy.exceptions.FueraDeRango;
 import um.edu.uy.interfaces.ListaTad;
 
-public class ListaEnlazada<T> implements ListaTad<T> {
+import java.util.Iterator;
+
+public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
     private Nodo<T> inicio;
     private Nodo<T> ultimo;
     private int size;
@@ -271,6 +273,25 @@ public class ListaEnlazada<T> implements ListaTad<T> {
             anterior.setSiguiente(actual.getSiguiente());
             actual.setSiguiente(anterior);
         }
+    }
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < tamanio();
+            }
+
+            @Override
+            public T next() {
+                try {
+                    return obtenervalorposicion(index++);
+                } catch (FueraDeRango e) {
+                    throw new RuntimeException("Fuera de rango durante la iteración", e);
+                }
+            }
+        };
     }
 
     public boolean isEmpty(){

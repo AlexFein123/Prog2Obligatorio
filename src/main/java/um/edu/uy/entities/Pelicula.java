@@ -108,6 +108,9 @@ public class Pelicula implements Comparable<Pelicula>{
         return (suma/total);
 
     }
+    public ListaEnlazada<Evaluacion> getEvaluaciones() {
+        return evaluaciones;
+    }
     @Override
     public int compareTo(Pelicula pelicula) { //mejor calificacion
         int valor=-1;

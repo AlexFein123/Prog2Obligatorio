@@ -4,7 +4,7 @@ public abstract class Persona {
     private double id;
     private String nombre;
 
-    public Persona(double id, String nombre){
+    public Persona(double id){
         this.id = id;
         this.nombre = nombre;
     }
