@@ -40,19 +40,6 @@ public class Main {
                         System.out.println("Evaluaciones cargadas: " + listaEvaluaciones.tamanio());
                         System.out.println("Actores cargados: " + hashActores.tamanio());
                         System.out.println("Directores cargados: " + hashDirectores.tamanio());
-
-                        // Prueba con una película en particular
-                        Pelicula p = hashPeliculas.obtener(106807); // Toy Story
-                        if (p != null) {
-                            System.out.println("\nEjemplo: Película con ID 106807");
-                            System.out.println("Título: " + p.getTitulo());
-                            System.out.println("Director: " + (p.getDirector() != null ? p.getDirector().getNombre() : "No asignado"));
-                            System.out.println("Actores:");
-                            for (int i = 0; i < p.getActores().tamanio(); i++) {
-                                System.out.println(" - " + p.getActores().obtenervalorposicion(i).getNombre());
-                            }
-                        }
-
                         long finCarga = System.currentTimeMillis();
                         System.out.println("\nCarga de datos exitosa, tiempo de ejecución: " + (finCarga - inicioCarga) + " ms");
                     } catch (Exception e) {

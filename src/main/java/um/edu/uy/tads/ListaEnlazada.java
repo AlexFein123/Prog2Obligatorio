@@ -2,10 +2,11 @@ package um.edu.uy.tads;
 
 import um.edu.uy.exceptions.FueraDeRango;
 import um.edu.uy.interfaces.ListaTad;
+import um.edu.uy.tads.ListaEnlazadaUtils;
 
 import java.util.Iterator;
 
-public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
+public class ListaEnlazada<T> implements ListaTad<T>, Iterable<T> {
     private Nodo<T> inicio;
     private Nodo<T> ultimo;
     private int size;
@@ -15,11 +16,26 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
         this.size = 0;
     }
 
+    public Nodo<T> getInicio() {
+        return inicio;
+    }
+
+    public void setInicio(Nodo<T> inicio) {
+        this.inicio = inicio;
+    }
+
+    public Nodo<T> getUltimo() {
+        return ultimo;
+    }
+
+    public void setUltimo(Nodo<T> ultimo) {
+        this.ultimo = ultimo;
+    }
+
     @Override
     public int tamanio() {
         return size;
     }
-
 
     @Override
     public void agregarprimero(T valor) {
@@ -47,6 +63,7 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
         }
         size++;
     }
+
     @Override
     public void agregarOrdenado(T valor) {
         if (!(valor instanceof Comparable)) {
@@ -87,7 +104,6 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
             size++;
         }
     }
-
 
     @Override
     public T remover(int posicion) throws FueraDeRango {
@@ -139,7 +155,6 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
         return devolver;
     }
 
-
     @Override
     public T obtenervalorposicion(int posicion) throws FueraDeRango {
         return (T) devolverNodoPosicion(posicion).getValor();
@@ -172,7 +187,6 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
         return array;
     }
 
-
     private Nodo<T> devolverNodoPosicion(int posicion) throws FueraDeRango {
         if (posicion >= size || posicion < 0) {
             throw new FueraDeRango();
@@ -203,12 +217,7 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
     }
 
     public void imprimirLista() {
-        Nodo actual = inicio;
-        while (actual != null) {
-            System.out.print(actual.getValor() + " ");
-            actual = actual.getSiguiente();
-        }
-        System.out.println();
+        ListaEnlazadaUtils.imprimirLista(this);
     }
 
     public void visualizar(ListaEnlazada posiciones) {
@@ -230,50 +239,9 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
     }
 
     public void intercambiar(T valor, int direccion) {
-        if (inicio == null || direccion == 0) return;
-
-        Nodo anterior = null;
-        Nodo actual = inicio;
-
-        while (actual != null && !actual.getValor().equals(valor)) {
-            anterior = actual;
-            actual = actual.getSiguiente();
-        }
-
-        if (actual == null) return;
-
-        if (direccion == 1 && actual.getSiguiente() != null) {
-            Nodo siguiente = actual.getSiguiente();
-            Nodo siguienteDeSiguiente = siguiente.getSiguiente();
-
-            if (anterior != null) {
-                anterior.setSiguiente(siguiente);
-            } else {
-                inicio = siguiente;
-            }
-
-            siguiente.setSiguiente(actual);
-            actual.setSiguiente(siguienteDeSiguiente);
-        } else if (direccion == -1 && anterior != null) {
-            Nodo anteAnterior = null;
-            Nodo cursor = inicio;
-
-            while (cursor != null && cursor.getSiguiente() != anterior) {
-                cursor = cursor.getSiguiente();
-            }
-
-            anteAnterior = cursor;
-
-            if (anteAnterior != null) {
-                anteAnterior.setSiguiente(actual);
-            } else {
-                inicio = actual;
-            }
-
-            anterior.setSiguiente(actual.getSiguiente());
-            actual.setSiguiente(anterior);
-        }
+        ListaEnlazadaUtils.intercambiar(this, valor, direccion);
     }
+
     public Iterator<T> iterator() {
         return new Iterator<T>() {
             private int index = 0;
@@ -294,7 +262,7 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
         };
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return size == 0;
     }
 
@@ -309,6 +277,4 @@ public class ListaEnlazada<T> implements ListaTad<T>,Iterable<T> {
         }
         size++;
     }
-
-
 }

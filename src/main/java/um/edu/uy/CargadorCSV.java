@@ -1,30 +1,15 @@
 package um.edu.uy;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeParseException;
-import um.edu.uy.entities.Director;
-import um.edu.uy.entities.Pelicula;
-import um.edu.uy.tads.HashTableCerrada;
-import um.edu.uy.entities.Evaluacion;
-import um.edu.uy.entities.Usuario;
-import um.edu.uy.tads.ListaEnlazada;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import com.opencsv.CSVReader;
-
+import java.io.*;
+import java.nio.file.*;
+import java.time.*;
+import java.time.format.*;
+import java.nio.charset.StandardCharsets;
 import um.edu.uy.entities.*;
-import um.edu.uy.tads.HashTableAbierta;
-import um.edu.uy.tads.HashTableCerrada;
-
-import um.edu.uy.exceptions.FueraDeRango;
-import um.edu.uy.tads.ListaEnlazada;
+import um.edu.uy.tads.*;
+import um.edu.uy.exceptions.*;
+import um.edu.uy.CSVUtils;
+import org.json.*;
+import com.opencsv.CSVReader;
 
 public class CargadorCSV {
 
@@ -34,6 +19,8 @@ public class CargadorCSV {
             ListaEnlazada<Evaluacion> evaluaciones
     ) {
         Path path = Paths.get(System.getProperty("user.dir")).resolve("./ratings_1mm.csv");
+
+        int evaluacionesIgnoradasPorFaltaPelicula = 0;
 
         try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
             String linea = br.readLine(); // Encabezado
@@ -47,17 +34,15 @@ public class CargadorCSV {
                 long timestamp = Long.parseLong(partes[3]);
                 LocalDate fecha = Instant.ofEpochSecond(timestamp).atZone(ZoneId.systemDefault()).toLocalDate();
 
-                // Obtener o crear usuario
                 Usuario user = usuarios.obtener(idUsuario);
                 if (user == null) {
                     user = new Usuario(idUsuario);
                     usuarios.agregar(idUsuario, user);
                 }
 
-                // Obtener película real desde tabla
                 Pelicula pelicula = peliculas.obtener(idPelicula);
                 if (pelicula == null) {
-                    // Si no se encuentra, se ignora la evaluación
+                    evaluacionesIgnoradasPorFaltaPelicula++;
                     continue;
                 }
 
@@ -68,18 +53,21 @@ public class CargadorCSV {
         } catch (IOException e) {
             System.err.println("Error al leer archivo de evaluaciones: " + e.getMessage());
         }
+
+        System.out.println("Evaluaciones ignoradas porque no se encontró la película: " + evaluacionesIgnoradasPorFaltaPelicula);
     }
 
     public static void cargarPeliculas(HashTableCerrada<Integer, Pelicula> hashPeliculas) {
         String archivo = "movies_metadata.csv";
-        int peliculasnocargadas = 0;
+        int peliculasNoCargadas = 0;
+
         try (CSVReader reader = new CSVReader(new FileReader(archivo))) {
-            String[] encabezado = reader.readNext(); // Leer encabezado
+            String[] encabezado = reader.readNext();
             String[] fila;
 
             while ((fila = reader.readNext()) != null) {
                 if (fila.length < 19) {
-                    System.err.println("Fila con columnas insuficientes (" + fila.length + "): se ignora.");
+                    peliculasNoCargadas++;
                     continue;
                 }
 
@@ -87,39 +75,31 @@ public class CargadorCSV {
                 try {
                     id = Integer.parseInt(fila[5].trim());
                 } catch (NumberFormatException nfe) {
-                    peliculasnocargadas++;
-                    System.err.println("ID inválido en fila, no es número: \"" + fila[5] + "\". Se ignora.");
+                    peliculasNoCargadas++;
                     continue;
                 }
 
                 try {
                     String titulo = fila[8];
                     String idiomaOriginal = fila[7];
-
-                    // Ingreso (revenue)
                     long ingreso = 0;
                     if (!fila[13].isEmpty()) {
                         try {
                             ingreso = Long.parseLong(fila[13]);
                         } catch (NumberFormatException e) {
-                            peliculasnocargadas++;
-                            System.err.println("Ingreso inválido en fila ID " + id + ": " + fila[13]);
+                            peliculasNoCargadas++;
                         }
                     }
 
-                    // Fecha (release_date)
                     LocalDate fecha = null;
                     if (!fila[12].isEmpty()) {
                         try {
                             fecha = LocalDate.parse(fila[12]);
-                        } catch (DateTimeParseException dtpe)
-                        {
-                            peliculasnocargadas++;
-                            System.err.println("Fecha inválida en fila ID " + id + ": \"" + fila[12] + "\"");
+                        } catch (DateTimeParseException dtpe) {
+                            peliculasNoCargadas++;
                         }
                     }
 
-                    // Géneros
                     ListaEnlazada<String> generos = new ListaEnlazada<>();
                     try {
                         String generosRaw = fila[3].replace("'", "\"");
@@ -129,11 +109,9 @@ public class CargadorCSV {
                             generos.agregarAlFinal(generoObj.getString("name"));
                         }
                     } catch (Exception e) {
-                        peliculasnocargadas++;
-                        System.err.println("Error procesando géneros en fila ID " + id);
+                        peliculasNoCargadas++;
                     }
 
-                    // Idiomas hablados
                     ListaEnlazada<String> idiomas = new ListaEnlazada<>();
                     try {
                         String idiomasRaw = fila[15].replace("'", "\"").trim();
@@ -145,31 +123,23 @@ public class CargadorCSV {
                             }
                         }
                     } catch (Exception e) {
-                        peliculasnocargadas++;
-                        System.err.println("Error procesando idiomas hablados en fila ID " + id);
+                        peliculasNoCargadas++;
                     }
 
-                    // Director (null por ahora)
                     Director director = null;
 
-                    // Crear y agregar película
                     Pelicula p = new Pelicula(id, titulo, generos, idiomaOriginal, ingreso, fecha, director, idiomas);
                     hashPeliculas.agregar(id, p);
 
                 } catch (Exception e) {
-                    peliculasnocargadas++;
-                    System.err.println("Error general al procesar fila con ID " + id + ": " + e.getMessage());
-                    System.err.println("Contenido de la fila:");
-                    for (int i = 0; i < fila.length; i++) {
-                        System.err.println("  [" + i + "] = " + fila[i]);
-                    }
+                    peliculasNoCargadas++;
                 }
             }
 
         } catch (Exception e) {
             System.err.println("Error al leer el archivo de películas: " + e.getMessage());
         }
-        System.out.println("Cantidad de peliculas no cargadas:" + peliculasnocargadas);
+        System.out.println("Cantidad de películas NO cargadas por error de formato: " + peliculasNoCargadas);
     }
 
     public static void cargarCreditos(
@@ -177,9 +147,10 @@ public class CargadorCSV {
             HashTableCerrada<String, Actor> actoresGlobal,
             HashTableCerrada<String, Director> directoresGlobal
     ) {
-        int a = 0;
+        int errores = 0;
         Path path = Paths.get("credits.csv");
-        try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path.toFile()), StandardCharsets.UTF_8));) {
             String linea;
             boolean primera = true;
 
@@ -189,7 +160,7 @@ public class CargadorCSV {
                     continue;
                 }
 
-                String[] partes = parseCSVLine(linea);
+                String[] partes = CSVUtils.parseCSVLine(linea);
                 if (partes.length < 3) continue;
 
                 String castRaw = partes[0];
@@ -205,9 +176,8 @@ public class CargadorCSV {
                 Pelicula pelicula = peliculas.obtener(idPelicula);
                 if (pelicula == null) continue;
 
-                // --- Actores ---
                 try {
-                    castRaw = castRaw.replace("'", "\"");
+                    castRaw = CSVUtils.arreglarJsonFalso(castRaw);
                     JSONArray castArray = new JSONArray(castRaw);
 
                     for (int i = 0; i < castArray.length(); i++) {
@@ -216,6 +186,8 @@ public class CargadorCSV {
 
                         String nombre = actorObj.getString("name").trim();
                         if (nombre.isEmpty()) continue;
+
+                        nombre = CSVUtils.corregirEncoding(nombre);
 
                         Actor actor = actoresGlobal.obtener(nombre);
                         if (actor == null) {
@@ -226,15 +198,12 @@ public class CargadorCSV {
                         actor.agregarPelicula(pelicula);
                         pelicula.getActores().agregar(actor);
                     }
-
                 } catch (Exception e) {
-                    a++;
-
+                    errores++;
                 }
 
-                // --- Director ---
                 try {
-                    crewRaw = crewRaw.replace("'", "\"");
+                    crewRaw = CSVUtils.arreglarJsonFalso(crewRaw);
                     JSONArray crewArray = new JSONArray(crewRaw);
 
                     for (int i = 0; i < crewArray.length(); i++) {
@@ -243,6 +212,8 @@ public class CargadorCSV {
                             String nombre = crewObj.getString("name").trim();
                             if (nombre.isEmpty()) continue;
 
+                            nombre = CSVUtils.corregirEncoding(nombre);
+
                             Director director = directoresGlobal.obtener(nombre);
                             if (director == null) {
                                 director = new Director(Math.random(), nombre);
@@ -250,62 +221,18 @@ public class CargadorCSV {
                             }
 
                             pelicula.setDirector(director);
-                            break; // solo un director
+                            break;
                         }
                     }
 
                 } catch (Exception e) {
-                    a++;
+                    errores++;
                 }
             }
 
         } catch (IOException e) {
             System.err.println("Error leyendo archivo credits.csv: " + e.getMessage());
         }
-        System.out.printf("Cantidad de Actores y directores no cargados: " + a + "\n");
-    }
-
-    private static String[] parseCSVLine(String linea) {
-        if (linea == null || linea.isEmpty()) {
-            return new String[0];
-        }
-
-        ListaEnlazada<String> campos = new ListaEnlazada<>();
-        StringBuilder campo = new StringBuilder();
-        boolean enComillas = false;
-
-        for (int i = 0; i < linea.length(); i++) {
-            char c = linea.charAt(i);
-
-            if (c == '"') {
-                // Si estamos en comillas y la siguiente es también comilla, es comilla escapada
-                if (enComillas && i + 1 < linea.length() && linea.charAt(i + 1) == '"') {
-                    campo.append('"'); // Agrego comilla escapada
-                    i++; // salto la siguiente comilla
-                } else {
-                    enComillas = !enComillas; // cambio estado de comillas
-                }
-            } else if (c == ',' && !enComillas) {
-                // Fin del campo si no estamos en comillas
-                campos.agregarAlFinal(campo.toString());
-                campo.setLength(0);
-            } else {
-                campo.append(c);
-            }
-        }
-        // Agrego último campo
-        campos.agregarAlFinal(campo.toString());
-
-        // Paso la lista enlazada a arreglo String[]
-        String[] resultado = new String[campos.tamanio()];
-        for (int i = 0; i < campos.tamanio(); i++) {
-            try {
-                resultado[i] = campos.obtenervalorposicion(i);
-            } catch (FueraDeRango e) {
-                resultado[i] = "";
-            }
-        }
-
-        return resultado;
+        System.out.println("Cantidad de errores parseando actores/directores: " + errores);
     }
 }

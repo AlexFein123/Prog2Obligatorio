@@ -96,6 +96,13 @@ public class Pelicula implements Comparable<Pelicula> {
     public Director getDirector() {
         return director;
     }
+    public void debugPrintDirector() {
+        if (director == null) {
+            System.out.println("Director es NULL en la película ID " + id);
+        } else {
+            System.out.println("Director asignado en película ID " + id + ": " + director.getNombre());
+        }
+    }
 
     public void setActores(ListaEnlazada<Actor> actores) {
         this.actores = actores;
