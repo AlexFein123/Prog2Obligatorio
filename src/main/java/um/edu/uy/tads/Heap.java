@@ -3,36 +3,36 @@ import um.edu.uy.interfaces.TADHeap;
 
 public class Heap<T extends Comparable<T>> implements TADHeap<T> {
     private T[] datos;
-    private int tamaño;
+    private int tamanio;
     private boolean esMinimo;
 
     @SuppressWarnings("unchecked")
     public Heap(int capacidad, boolean esMinimo) {
         datos = (T[]) new Comparable[capacidad];
-        this.tamaño = 0;
+        this.tamanio = 0;
         this.esMinimo = esMinimo;
     }
 
     @Override
     public void agregar(T elemento) {
-        if (tamaño >= datos.length) throw new RuntimeException("Heap lleno");
-        datos[tamaño] = elemento;
-        flotar(tamaño);
-        tamaño++;
+        if (tamanio >= datos.length) throw new RuntimeException("Heap lleno");
+        datos[tamanio] = elemento;
+        flotar(tamanio);
+        tamanio++;
     }
 
     @Override
     public T obtenerYEliminar() {
-        if (tamaño == 0) return null;
+        if (tamanio == 0) return null;
         T raiz = datos[0];
-        datos[0] = datos[--tamaño];
+        datos[0] = datos[--tamanio];
         hundir(0);
         return raiz;
     }
 
     @Override
     public int obtenerTamanio() {
-        return tamaño;
+        return tamanio;
     }
 
     @Override
@@ -40,9 +40,9 @@ public class Heap<T extends Comparable<T>> implements TADHeap<T> {
         int nivel = 0;
         int elementosEnNivel = 1;
         int i = 0;
-        while (i < tamaño) {
+        while (i < tamanio) {
             System.out.print("Nivel " + nivel + ": ");
-            for (int j = 0; j < elementosEnNivel && i < tamaño; j++, i++) {
+            for (int j = 0; j < elementosEnNivel && i < tamanio; j++, i++) {
                 System.out.print(datos[i] + " ");
             }
             System.out.println();
@@ -62,9 +62,9 @@ public class Heap<T extends Comparable<T>> implements TADHeap<T> {
     }
 
     private void hundir(int i) {
-        while (2 * i + 1 < tamaño) {
+        while (2 * i + 1 < tamanio) {
             int hijo = 2 * i + 1;
-            if (hijo + 1 < tamaño && comparar(datos[hijo + 1], datos[hijo])) {
+            if (hijo + 1 < tamanio && comparar(datos[hijo + 1], datos[hijo])) {
                 hijo++;
             }
             if (comparar(datos[hijo], datos[i])) {
@@ -75,7 +75,7 @@ public class Heap<T extends Comparable<T>> implements TADHeap<T> {
     }
 
     public boolean isEmpty(){
-        return tamaño == 0;
+        return tamanio == 0;
     }
 
     private boolean comparar(T a, T b) {
