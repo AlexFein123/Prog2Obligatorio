@@ -14,12 +14,12 @@ public class Director extends Persona implements Comparable<Director> {
         return peliculasdelDirector;
     }
 
-    public int calificacionMedia()  {
+    public double calificacionMedia()  {
         if (peliculasdelDirector.isEmpty()){
             return 0; //no tiene peliculas
         }
-        int suma=0;
-        int total=peliculasdelDirector.tamanio();
+        double suma=0;
+        double total=peliculasdelDirector.tamanio();
         for(int enPeliculas=0;enPeliculas<total;enPeliculas++){
             try {
                 Pelicula pelicula = peliculasdelDirector.obtenervalorposicion(enPeliculas);
@@ -29,7 +29,7 @@ public class Director extends Persona implements Comparable<Director> {
             }
 
         }
-        return (suma/total);
+        return  (suma / total);
     }
 
     public int totalEvaluaciones(){
@@ -51,19 +51,14 @@ public class Director extends Persona implements Comparable<Director> {
 
     @Override
     public int compareTo(Director director) { //mejor media calificacion
-        int valor=-1;
-        if(this.calificacionMedia()== director.calificacionMedia()){
-            valor=0;
-        }else if(this.calificacionMedia()>director.calificacionMedia()){
-            valor=1; //mejor clasificacion esta que la otra
-        }
-        return valor;
+           return Double.compare(this.calificacionMedia(), director.calificacionMedia());
     }
     @Override
     public String toString(){
-        return "Nombre director: " + getNombre()+ "/n" +
-                "Cantidad peliculas: " + getPeliculasdelDirector().tamanio()+"/n" +
-                "Calificación media: "+ calificacionMedia()+ "/n";
+        return "Nombre director: " + getNombre()+ "\n" +
+                "Cantidad peliculas: " + getPeliculasdelDirector().tamanio()+"\n" +
+                "Calificacion media: "+ calificacionMedia()+ "\n" +
+                "Cantidad evaluaciones: "+ totalEvaluaciones() + "\n";
     }
 
 

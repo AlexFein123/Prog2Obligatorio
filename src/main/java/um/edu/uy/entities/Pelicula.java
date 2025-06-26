@@ -108,7 +108,7 @@ public class Pelicula implements Comparable<Pelicula> {
         return evaluaciones;
     }
 
-    public int calificacionMedia() {
+    public double calificacionMedia() {
         if (evaluaciones.isEmpty()) return 0;
 
         int suma = 0;
@@ -119,7 +119,7 @@ public class Pelicula implements Comparable<Pelicula> {
                 throw new IllegalStateException("Error accediendo a evaluación");
             }
         }
-        return suma / evaluaciones.tamanio();
+        return (double) suma / evaluaciones.tamanio();
     }
 
     public ListaEnlazada<String> getIdiomasHablados() {
@@ -140,15 +140,16 @@ public class Pelicula implements Comparable<Pelicula> {
 
     @Override
     public int compareTo(Pelicula otra) {
-        return Integer.compare(this.calificacionMedia(), otra.calificacionMedia());
-    }
+      return Double.compare(this.calificacionMedia(), otra.calificacionMedia());
+   }
 
-    @Override
+
+           @Override
     public String toString() {
-        return "Id de la película: " + id + "\n" +
-                "Título: " + titulo + "\n" +
-                "Calificación media: " + calificacionMedia() + "\n" +
-                "Idiomas hablados: " + idiomasHablados + "\n" +
-                "Saga: " + (saga != null ? saga.getNombre() : "Ninguna") + "\n";
+        return "Id de la pelicula: " + id + "\n" +
+                "Titulo: " + titulo + "\n" +
+                "Calificacion media: " + calificacionMedia() + "\n" ;
+                //"Idiomas hablados: " + idiomasHablados + "\n" +
+                //"Saga: " + (saga != null ? saga.getNombre() : "Ninguna") + "\n";
     }
 }

@@ -64,16 +64,16 @@ public class Saga implements Comparable<Saga> {
     }
     @Override
     public String toString() {
-        String resultado= "Saga: " + "id= " + id + '\n'+
-                ", nombre=" + nombre + '\n'+
-                "cantidad de peliculas= " + peliculas.tamanio()+ '\n'
+        String resultado= "Saga: " + "id= " + id + "\n"+
+                "Nombre=" + nombre + "\n"+
+                "cantidad de peliculas= " + peliculas.tamanio()+ "\n"
                 + "id peliculas= ";
 
         for (Pelicula pelicula: peliculas){
-            resultado+= pelicula.getId() +",";
+            resultado+= pelicula.getId() +"\n";
                 }
-        return resultado+='\n' +
-                "ingreso generados= " + sumaIngreso();
+        return resultado+="\n" +
+                "ingreso generados= " + sumaIngreso() +"\n";
     }
 
 }
