@@ -3,6 +3,7 @@ package um.edu.uy;
 import java.util.Scanner;
 
 import um.edu.uy.entities.*;
+import um.edu.uy.exceptions.FueraDeRango;
 import um.edu.uy.tads.HashTableAbierta;
 import um.edu.uy.tads.HashTableCerrada;
 import um.edu.uy.tads.ListaEnlazada;
@@ -29,9 +30,10 @@ public class Main {
                         HashTableCerrada<Integer, Pelicula> hashPeliculas = new HashTableCerrada<>(100_000);
                         HashTableCerrada<String, Actor> hashActores = new HashTableCerrada<>(100_000);
                         HashTableCerrada<String, Director> hashDirectores = new HashTableCerrada<>(100_000);
+                        HashTableCerrada<Integer, Saga> hashSagas = new HashTableCerrada<>(1000);
                         ListaEnlazada<Evaluacion> listaEvaluaciones = new ListaEnlazada<>();
 
-                        CargadorCSV.cargarPeliculas(hashPeliculas);
+                        CargadorCSV.cargarPeliculas(hashPeliculas,hashSagas);
                         CargadorCSV.cargarUsuariosYEvaluaciones(hashUsuarios, hashPeliculas, listaEvaluaciones);
                         CargadorCSV.cargarCreditos(hashPeliculas, hashActores, hashDirectores);
 
@@ -40,6 +42,7 @@ public class Main {
                         System.out.println("Evaluaciones cargadas: " + listaEvaluaciones.tamanio());
                         System.out.println("Actores cargados: " + hashActores.tamanio());
                         System.out.println("Directores cargados: " + hashDirectores.tamanio());
+                        System.out.println("Sagas cargadas: " + hashSagas.tamanio());
                         long finCarga = System.currentTimeMillis();
                         System.out.println("\nCarga de datos exitosa, tiempo de ejecución: " + (finCarga - inicioCarga) + " ms");
                     } catch (Exception e) {

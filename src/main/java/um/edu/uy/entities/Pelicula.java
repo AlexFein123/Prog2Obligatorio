@@ -15,10 +15,11 @@ public class Pelicula implements Comparable<Pelicula> {
     private ListaEnlazada<Actor> actores;
     private ListaEnlazada<Evaluacion> evaluaciones;
     private Director director;
-    private ListaEnlazada<String> idiomasHablados;  // NUEVO
+    private ListaEnlazada<String> idiomasHablados;
+    private Saga saga;  // NUEVO
 
     public Pelicula(int id, String titulo, ListaEnlazada<String> genero, String idiomaOriginal,
-                    long ingreso, LocalDate fecha, Director director, ListaEnlazada<String> idiomasHablados) {
+                    long ingreso, LocalDate fecha, Director director, ListaEnlazada<String> idiomasHablados, Saga saga) {
         this.id = id;
         this.titulo = titulo;
         this.genero = genero;
@@ -29,6 +30,7 @@ public class Pelicula implements Comparable<Pelicula> {
         this.evaluaciones = new ListaEnlazada<>();
         this.director = director;
         this.idiomasHablados = idiomasHablados;
+        this.saga = saga;
     }
 
     public int cantidadDeEvaluaciones() {
@@ -89,73 +91,64 @@ public class Pelicula implements Comparable<Pelicula> {
             director.getPeliculasdelDirector().agregarAlFinal(this);
         }
     }
-    public ListaEnlazada<Actor> getActores() {
-        return actores;
-    }
 
     public Director getDirector() {
         return director;
     }
-    public void debugPrintDirector() {
-        if (director == null) {
-            System.out.println("Director es NULL en la película ID " + id);
-        } else {
-            System.out.println("Director asignado en película ID " + id + ": " + director.getNombre());
-        }
+
+    public ListaEnlazada<Actor> getActores() {
+        return actores;
     }
 
     public void setActores(ListaEnlazada<Actor> actores) {
         this.actores = actores;
     }
 
-    public int calificacionMedia() {
-        if (evaluaciones.isEmpty()) {
-            return 0; // no tiene evaluaciones
-        }
-        int suma = 0;
-        int total = 0;
-        for (int enEvaluaciones = 0; enEvaluaciones < evaluaciones.tamanio(); enEvaluaciones++) {
-            Evaluacion evaluacion = null;
-            try {
-                evaluacion = evaluaciones.obtenervalorposicion(enEvaluaciones);
-            } catch (FueraDeRango e) {
-                throw new IllegalStateException("no posible");
-            }
-            suma += evaluacion.getClasificacion();
-            total++;
-        }
-        return (suma / total);
-    }
-
     public ListaEnlazada<Evaluacion> getEvaluaciones() {
         return evaluaciones;
     }
 
-    public ListaEnlazada<String> getIdiomasHablados() {  // NUEVO getter
+    public int calificacionMedia() {
+        if (evaluaciones.isEmpty()) return 0;
+
+        int suma = 0;
+        for (int i = 0; i < evaluaciones.tamanio(); i++) {
+            try {
+                suma += evaluaciones.obtenervalorposicion(i).getClasificacion();
+            } catch (FueraDeRango e) {
+                throw new IllegalStateException("Error accediendo a evaluación");
+            }
+        }
+        return suma / evaluaciones.tamanio();
+    }
+
+    public ListaEnlazada<String> getIdiomasHablados() {
         return idiomasHablados;
     }
 
-    public void setIdiomasHablados(ListaEnlazada<String> idiomasHablados) {  // NUEVO setter
+    public void setIdiomasHablados(ListaEnlazada<String> idiomasHablados) {
         this.idiomasHablados = idiomasHablados;
     }
 
+    public Saga getSaga() {
+        return saga;
+    }
+
+    public void setSaga(Saga saga) {
+        this.saga = saga;
+    }
+
     @Override
-    public int compareTo(Pelicula pelicula) { // mejor calificación
-        int valor = -1;
-        if (this.calificacionMedia() == pelicula.calificacionMedia()) {
-            valor = 0;
-        } else if (this.calificacionMedia() > pelicula.calificacionMedia()) {
-            valor = 1; // mejor calificación esta que la otra
-        }
-        return valor;
+    public int compareTo(Pelicula otra) {
+        return Integer.compare(this.calificacionMedia(), otra.calificacionMedia());
     }
 
     @Override
     public String toString() {
-        return "Id de la película: " + getId() + "\n" +
-                "Título de la película: " + getTitulo() + "\n" +
+        return "Id de la película: " + id + "\n" +
+                "Título: " + titulo + "\n" +
                 "Calificación media: " + calificacionMedia() + "\n" +
-                "Idiomas hablados: " + idiomasHablados.toString() + "\n";
+                "Idiomas hablados: " + idiomasHablados + "\n" +
+                "Saga: " + (saga != null ? saga.getNombre() : "Ninguna") + "\n";
     }
 }
-

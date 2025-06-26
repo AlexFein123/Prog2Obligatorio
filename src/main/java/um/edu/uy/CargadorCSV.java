@@ -57,7 +57,8 @@ public class CargadorCSV {
         System.out.println("Evaluaciones ignoradas porque no se encontró la película: " + evaluacionesIgnoradasPorFaltaPelicula);
     }
 
-    public static void cargarPeliculas(HashTableCerrada<Integer, Pelicula> hashPeliculas) {
+    public static void cargarPeliculas(HashTableCerrada<Integer, Pelicula> hashPeliculas,
+                                       HashTableCerrada<Integer, Saga> sagas) {
         String archivo = "movies_metadata.csv";
         int peliculasNoCargadas = 0;
 
@@ -87,7 +88,7 @@ public class CargadorCSV {
                         try {
                             ingreso = Long.parseLong(fila[13]);
                         } catch (NumberFormatException e) {
-                            peliculasNoCargadas++;
+                            // Si falla el parseo de ingreso, dejarlo en 0
                         }
                     }
 
@@ -96,7 +97,7 @@ public class CargadorCSV {
                         try {
                             fecha = LocalDate.parse(fila[12]);
                         } catch (DateTimeParseException dtpe) {
-                            peliculasNoCargadas++;
+                            // Dejar fecha como null si no se puede parsear
                         }
                     }
 
@@ -109,7 +110,7 @@ public class CargadorCSV {
                             generos.agregarAlFinal(generoObj.getString("name"));
                         }
                     } catch (Exception e) {
-                        peliculasNoCargadas++;
+                        // Si falla, se deja la lista vacía
                     }
 
                     ListaEnlazada<String> idiomas = new ListaEnlazada<>();
@@ -123,13 +124,38 @@ public class CargadorCSV {
                             }
                         }
                     } catch (Exception e) {
-                        peliculasNoCargadas++;
+                        // Si falla, se deja la lista vacía
                     }
 
-                    Director director = null;
+                    Director director = null; // Se asigna en otro método (credits.csv)
 
-                    Pelicula p = new Pelicula(id, titulo, generos, idiomaOriginal, ingreso, fecha, director, idiomas);
+                    // ---- Carga segura de saga ----
+                    Saga saga = null;
+                    String coleccionRaw = fila[1]; // belongs_to_collection
+                    if (coleccionRaw != null && !coleccionRaw.isEmpty()) {
+                        try {
+                            coleccionRaw = coleccionRaw.replace("'", "\"").trim();
+                            JSONObject coleccionJSON = new JSONObject(coleccionRaw);
+                            int idSaga = coleccionJSON.getInt("id");
+                            String nombreSaga = coleccionJSON.getString("name");
+
+                            saga = sagas.obtener(idSaga);
+                            if (saga == null) {
+                                saga = new Saga(idSaga, nombreSaga);
+                                sagas.agregar(idSaga, saga);
+                            }
+                        } catch (Exception e) {
+                            // Si hay error parseando la saga, no se asigna
+                        }
+                    }
+
+                    Pelicula p = new Pelicula(id, titulo, generos, idiomaOriginal, ingreso, fecha, director, idiomas, saga);
                     hashPeliculas.agregar(id, p);
+
+                    // Si tiene saga, agregar la película a la saga
+                    if (saga != null) {
+                        saga.getPeliculas().agregarAlFinal(p);
+                    }
 
                 } catch (Exception e) {
                     peliculasNoCargadas++;
@@ -139,6 +165,7 @@ public class CargadorCSV {
         } catch (Exception e) {
             System.err.println("Error al leer el archivo de películas: " + e.getMessage());
         }
+
         System.out.println("Cantidad de películas NO cargadas por error de formato: " + peliculasNoCargadas);
     }
 
