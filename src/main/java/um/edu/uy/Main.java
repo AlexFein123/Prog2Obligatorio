@@ -134,12 +134,16 @@ public class Main {
                         System.err.println("Error al cargar películas: ");
                         e.printStackTrace(); // Te dice la línea exacta
                     }
-
-
                     //sistema.actorMasVistoPorMes();
                     break;
                 case "6":
-                    //sistema.usuariosTopPorGenero();
+                    //sis1tema.usuariosTopPorGenero();
+                    try {
+                        System.out.println(consulta.topUsuariosConMasClasificacionesPorGenero());
+                    } catch (Exception e) {
+                        System.err.println("Error al cargar películas: ");
+                        e.printStackTrace(); // Te dice la línea exacta
+                    }
                     break;
                 case "7":
                     return;

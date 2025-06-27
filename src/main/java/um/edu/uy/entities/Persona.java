@@ -1,13 +1,13 @@
 package um.edu.uy.entities;
 
 public abstract class Persona {
-    private double id;
+    private int id;
     private String nombre;
 
-    public Persona(double id){
+    public Persona(int id){
         this.id = id;
     }
-    public Persona(double id, String nombre){
+    public Persona(int id, String nombre){
         this.id = id;
         this.nombre = nombre;
 
@@ -17,7 +17,7 @@ public abstract class Persona {
         return nombre;
     }
 
-    public double getId() {
+    public int getId() {
         return id;
     }
 

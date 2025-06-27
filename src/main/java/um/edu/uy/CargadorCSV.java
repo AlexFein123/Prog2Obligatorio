@@ -218,7 +218,7 @@ public class CargadorCSV {
 
                         Actor actor = actoresGlobal.obtener(nombre);
                         if (actor == null) {
-                            actor = new Actor(Math.random(), nombre);
+                            actor = new Actor((int)Math.random(), nombre);
                             actoresGlobal.agregar(nombre, actor);
                         }
 
@@ -243,7 +243,7 @@ public class CargadorCSV {
 
                             Director director = directoresGlobal.obtener(nombre);
                             if (director == null) {
-                                director = new Director(Math.random(), nombre);
+                                director = new Director((int)Math.random(), nombre);
                                 directoresGlobal.agregar(nombre, director);
                             }
 

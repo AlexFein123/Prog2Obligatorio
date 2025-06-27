@@ -5,7 +5,8 @@ import um.edu.uy.tads.ListaEnlazada;
 
 public class Director extends Persona implements Comparable<Director> {
     private ListaEnlazada<Pelicula> peliculasdelDirector;
-    public Director(double id, String nombre) {
+
+    public Director(int id, String nombre) {
         super(id, nombre);
         this.peliculasdelDirector = new ListaEnlazada<>();
     }

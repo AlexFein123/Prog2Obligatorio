@@ -222,7 +222,6 @@ public class Consultas {
             }
         }
 
-        // Construir heap con los géneros más populares
         Heap<Pair<String, Integer>> heapGeneros = new Heap<>(conteoGeneros.tamanio(), false);
         ListaEnlazada<NodoHash<String, Integer>>[] tablaGeneros = conteoGeneros.getEntryArray();
 
@@ -238,9 +237,8 @@ public class Consultas {
             }
         }
 
-        StringBuilder resultado = new StringBuilder();
-        resultado.append("TOP USUARIOS CON MÁS CLASIFICACIONES POR GÉNERO\n");
-        resultado.append("-------------------------------------------------\n");
+        String resultado = "USUARIO CON MAS CLASIFICACIONES POR GENERO\n" +
+                "--------------------------------------------\n";
 
         for (int i = 0; i < 10 && !heapGeneros.isEmpty(); i++) {
             Pair<String, Integer> parGenero = heapGeneros.obtenerYEliminar();
@@ -257,7 +255,10 @@ public class Consultas {
                 for (int j = 0; j < evaluaciones.tamanio(); j++) {
                     try {
                         Evaluacion eval = evaluaciones.obtenervalorposicion(j);
-                        int userId = eval.getUser().getIdUsuario();
+                        Usuario usuario = eval.getUser();
+                        if (usuario == null) continue;
+                        int userId = (int) usuario.getId(); // ← tratamos el ID como int
+
                         Integer cantidad = conteoUsuario.obtener(userId);
                         if (cantidad == null) cantidad = 0;
                         conteoUsuario.agregar(userId, cantidad + 1);
@@ -267,7 +268,6 @@ public class Consultas {
                 }
             }
 
-            // Heap de usuarios con más clasificaciones
             Heap<Pair<Integer, Integer>> heapUsuarios = new Heap<>(conteoUsuario.tamanio(), false);
             ListaEnlazada<NodoHash<Integer, Integer>>[] tablaUsuarios = conteoUsuario.getEntryArray();
 
@@ -283,27 +283,26 @@ public class Consultas {
                 }
             }
 
-            resultado.append("Género: ").append(genero).append("\n");
-            for (int k = 0; k < 5 && !heapUsuarios.isEmpty(); k++) {
+            resultado += "Genero: " + genero + "\n";
+            if (!heapUsuarios.isEmpty()) {
                 Pair<Integer, Integer> topUser = heapUsuarios.obtenerYEliminar();
                 Usuario u = usuarioHash.obtener(topUser.getKey());
                 if (u != null) {
-                    resultado.append((k + 1)).append(". ").append(u.toString())
-                            .append(" → ").append(topUser.getValue()).append(" clasificaciones\n");
+                    resultado += u.toString();
+                    resultado += "Cantidad de Clasificaciones: " + topUser.getValue() + "\n";
                 } else {
-                    if (u == null) {
-                        System.out.println("Usuario no encontrado: ID = " + topUser.getKey());
-                    }
-                    resultado.append((k + 1)).append(". Usuario desconocido (ID: ")
-                            .append(topUser.getKey()).append(") → ")
-                            .append(topUser.getValue()).append(" clasificaciones\n");
+                    resultado += "Usuario desconocido (ID: " + topUser.getKey() + ") → "
+                            + topUser.getValue() + " clasificaciones\n";
                 }
+            } else {
+                resultado += "No se encontraron usuarios para este género.\n";
             }
-            resultado.append("\n");
+            resultado += "\n";
         }
 
-        return resultado.toString();
+        return resultado;
     }
+
 }
 
 

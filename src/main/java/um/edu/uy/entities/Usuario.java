@@ -4,22 +4,11 @@ package um.edu.uy.entities;
 import um.edu.uy.tads.ListaEnlazada;
 
 public class Usuario extends Persona implements Comparable<Usuario> {
-
-    private int idUsuario;
-
     private ListaEnlazada<Evaluacion> evaluaciones;
 
     public Usuario(int id) {
         super(id);
         this.evaluaciones = new ListaEnlazada<>();
-    }
-
-    public int getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(double idUsuario) {
-        this.idUsuario = idUsuario;
     }
 
     public ListaEnlazada<Evaluacion> getEvaluaciones() {
@@ -51,7 +40,7 @@ public class Usuario extends Persona implements Comparable<Usuario> {
 
     @Override
     public String toString() {
-        return "User: " + idUsuario + "\n\n";
+        return "User: " + getId() + "\n";
     }
 
 }
