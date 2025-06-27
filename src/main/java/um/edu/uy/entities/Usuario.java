@@ -5,7 +5,7 @@ import um.edu.uy.tads.ListaEnlazada;
 
 public class Usuario extends Persona implements Comparable<Usuario> {
 
-    private int idUsuario;
+    private double idUsuario;
 
     private ListaEnlazada<Evaluacion> evaluaciones;
 
@@ -14,9 +14,20 @@ public class Usuario extends Persona implements Comparable<Usuario> {
         this.evaluaciones = new ListaEnlazada<>();
     }
 
-
-    public long getIdUsuario() {
+    public double getIdUsuario() {
         return idUsuario;
+    }
+
+    public void setIdUsuario(double idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+
+    public ListaEnlazada<Evaluacion> getEvaluaciones() {
+        return evaluaciones;
+    }
+
+    public void setEvaluaciones(ListaEnlazada<Evaluacion> evaluaciones) {
+        this.evaluaciones = evaluaciones;
     }
 
     public void setEvaluacion(Evaluacion e){

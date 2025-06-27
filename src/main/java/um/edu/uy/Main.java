@@ -12,7 +12,15 @@ public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         // SistemaUMovie sistema = new SistemaUMovie();
+        HashTableCerrada<Integer, Usuario> hashUsuarios = new HashTableCerrada<>(500000);
+        HashTableCerrada<Integer, Pelicula> hashPeliculas = new HashTableCerrada<>(500000);
+        HashTableCerrada<String, Actor> hashActores = new HashTableCerrada<>(500000);
+        HashTableCerrada<String, Director> hashDirectores = new HashTableCerrada<>(500000);
+        HashTableCerrada<Integer, Saga> hashSagas = new HashTableCerrada<>(5000);
+        ListaEnlazada<Evaluacion> listaEvaluaciones = new ListaEnlazada<>();
 
+
+        Consultas consulta=null;
         while (true) {
             System.out.println("Seleccione la opción que desee:");
             System.out.println("1. Carga de datos");
@@ -20,22 +28,17 @@ public class Main {
             System.out.println("3. Salir");
 
             String opcion = scanner.nextLine();
-
             switch (opcion) {
                 case "1":
                     try {
                         long inicioCarga = System.currentTimeMillis();
 
-                        HashTableCerrada<Integer, Usuario> hashUsuarios = new HashTableCerrada<>(100_000);
-                        HashTableCerrada<Integer, Pelicula> hashPeliculas = new HashTableCerrada<>(100_000);
-                        HashTableCerrada<String, Actor> hashActores = new HashTableCerrada<>(100_000);
-                        HashTableCerrada<String, Director> hashDirectores = new HashTableCerrada<>(100_000);
-                        HashTableCerrada<Integer, Saga> hashSagas = new HashTableCerrada<>(1000);
-                        ListaEnlazada<Evaluacion> listaEvaluaciones = new ListaEnlazada<>();
-
                         CargadorCSV.cargarPeliculas(hashPeliculas,hashSagas);
                         CargadorCSV.cargarUsuariosYEvaluaciones(hashUsuarios, hashPeliculas, listaEvaluaciones);
                         CargadorCSV.cargarCreditos(hashPeliculas, hashActores, hashDirectores);
+
+                        consulta = new Consultas(hashPeliculas, hashSagas, hashDirectores, hashActores,hashUsuarios);
+
 
                         System.out.println("Usuarios cargados: " + hashUsuarios.tamanio());
                         System.out.println("Películas cargadas: " + hashPeliculas.tamanio());
@@ -51,7 +54,11 @@ public class Main {
                     }
                     break;
                 case "2":
-                    ejecutarConsultas(scanner);
+                    if(consulta==null){
+                        System.out.println("Primero carga de datos");
+                    }else {
+                        ejecutarConsultas(scanner, consulta);
+                    }
                     break;
                 case "3":
                     System.out.println("Saliendo...");
@@ -62,7 +69,8 @@ public class Main {
         }
     }
 
-    public static void ejecutarConsultas(Scanner scanner) {
+    public static void ejecutarConsultas(Scanner scanner,Consultas consulta) {
+
         while (true) {
             System.out.println("1. Top 5 de las películas que más calificaciones por idioma.");
             System.out.println("2. Top 10 de las películas que mejor calificación media tienen por parte de los usuarios.");
@@ -77,18 +85,57 @@ public class Main {
             long inicio = System.currentTimeMillis();
             switch (opcion) {
                 case "1":
+                    try {
+                        {
+                            System.out.println(consulta.Top5PorIdioma());
+                        }
+
+                    } catch (Exception e) {
+                        System.err.println("Error al cargar películas: ");
+                        e.printStackTrace(); // Te dice la línea exacta
+                    }
+
                     //sistema.topPeliculasPorIdioma();
                     break;
                 case "2":
+                    try {
+                            System.out.println(consulta.top10MejoresPeliculasCalificadasMedia());
+                    } catch (Exception e) {
+                        System.err.println("Error al cargar películas: ");
+                        e.printStackTrace(); // Te dice la línea exacta
+                    }
+
                     //sistema.topPeliculasPorCalificacionMedia();
                     break;
                 case "3":
+                    try {
+                            System.out.println(consulta.getTopSagas());
+                    } catch (Exception e) {
+                        System.err.println("Error al cargar películas: ");
+                        e.printStackTrace(); // Te dice la línea exacta
+                    }
+
                     //sistema.topColeccionesPorIngresos();
                     break;
                 case "4":
+                    try {
+                    System.out.println(consulta.top10MejoresDirectoresCalificacionMedia());
+                } catch (Exception e) {
+                    System.err.println("Error al cargar películas: ");
+                    e.printStackTrace(); // Te dice la línea exacta
+                }
+
                     //sistema.topDirectoresPorMediana();
                     break;
                 case "5":
+                    try {
+                        System.out.println(consulta.mejorActorPorMes());
+                    } catch (Exception e) {
+                        System.err.println("Error al cargar películas: ");
+                        e.printStackTrace(); // Te dice la línea exacta
+                    }
+
+
                     //sistema.actorMasVistoPorMes();
                     break;
                 case "6":

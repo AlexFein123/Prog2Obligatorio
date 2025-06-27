@@ -1,20 +1,24 @@
 package um.edu.uy.tads;
 
-public class Pair <K, T>{
-    private final K key;
-    private final T value;
+public class Pair<K, V extends Comparable<V>> implements Comparable<Pair<K, V>> {
+    private K key;
+    private V value;
 
-    public Pair(K key, T value){
+    public Pair(K key, V value) {
         this.key = key;
         this.value = value;
     }
 
-    public K getKey() {
+    public Integer getKey() {
         return key;
     }
 
-    public T getValue() {
+    public V getValue() {
         return value;
     }
-}
 
+    @Override
+    public int compareTo(Pair<K, V> o) {
+        return this.value.compareTo(o.value);
+    }
+}
