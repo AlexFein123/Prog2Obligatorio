@@ -78,7 +78,7 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
                     if (nodo.getClave().equals(key)) {
                         lista.remover(i);
                         size--;
-                        return (NodoHash) nodo.getValor();
+                        return nodo;
                     }
                 }
             } catch (FueraDeRango e) {
