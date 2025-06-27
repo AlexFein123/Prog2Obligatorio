@@ -8,9 +8,9 @@ public class Evaluacion {
     private float clasificacion;
     private LocalDate fecha;
 
-    public Evaluacion (Pelicula pelicula,Usuario user, float clasificacion, LocalDate fecha){
+    public Evaluacion (Pelicula pelicula, Usuario user, float clasificacion, LocalDate fecha){
         this.pelicula = pelicula;
-        this.user = new Usuario(user.getId());
+        this.user = user;
         this.clasificacion = clasificacion;
         this.fecha = fecha;
     }

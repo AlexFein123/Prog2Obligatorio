@@ -171,5 +171,10 @@ public class HashTableCerrada<K, T> implements HashTable<K, T> {
     public int getCapacidad() {
         return entryArray.length;
     }
+
+    public ListaEnlazada<NodoHash<K, T>>[] getEntryArray() {
+        return entryArray;
+    }
+
 }
 

@@ -9,7 +9,7 @@ public class Pair<K, V extends Comparable<V>> implements Comparable<Pair<K, V>> 
         this.value = value;
     }
 
-    public Integer getKey() {
+    public K getKey() {
         return key;
     }
 

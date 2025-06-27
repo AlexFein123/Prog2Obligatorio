@@ -5,16 +5,16 @@ import um.edu.uy.tads.ListaEnlazada;
 
 public class Usuario extends Persona implements Comparable<Usuario> {
 
-    private double idUsuario;
+    private int idUsuario;
 
     private ListaEnlazada<Evaluacion> evaluaciones;
 
-    public Usuario(double id) {
+    public Usuario(int id) {
         super(id);
         this.evaluaciones = new ListaEnlazada<>();
     }
 
-    public double getIdUsuario() {
+    public int getIdUsuario() {
         return idUsuario;
     }
 
