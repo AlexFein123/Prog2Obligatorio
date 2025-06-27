@@ -88,4 +88,16 @@ public class HashTableAbierta<K, T> implements HashTable<K, T> {
     private int funcionHash(K clave) {
         return Math.abs(clave.hashCode()) % capacidad;
     }
+
+    public ListaEnlazada<NodoHash<K, T>>[] getTabla() {
+        return tabla;
+    }
+
+    public void setTabla(ListaEnlazada<NodoHash<K, T>>[] tabla) {
+        this.tabla = tabla;
+    }
+
+    public int getCapacidad() {
+        return capacidad;
+    }
 }

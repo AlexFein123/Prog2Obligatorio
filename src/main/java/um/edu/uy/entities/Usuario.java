@@ -5,7 +5,7 @@ import um.edu.uy.tads.ListaEnlazada;
 
 public class Usuario extends Persona implements Comparable<Usuario> {
 
-    private long idUsuario;
+    private int idUsuario;
 
     private ListaEnlazada<Evaluacion> evaluaciones;
 

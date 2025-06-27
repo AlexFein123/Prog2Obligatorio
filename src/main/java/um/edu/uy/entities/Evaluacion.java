@@ -40,4 +40,8 @@ public class Evaluacion {
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
+
+    public Pelicula getPelicula() {
+        return pelicula;
+    }
 }
