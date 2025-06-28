@@ -40,7 +40,7 @@ public class HashTableAbierta<K, T> implements HashTable<K, T> {
     }
 
     @Override
-    public NodoHash borrar(K clave) {
+    public NodoHash<K, T> borrar(K clave) {
         int posicion = funcionHash(clave);
         ListaEnlazada<NodoHash<K, T>> lista = tabla[posicion];
 
@@ -48,10 +48,9 @@ public class HashTableAbierta<K, T> implements HashTable<K, T> {
             try {
                 NodoHash<K, T> nodo = lista.obtenervalorposicion(i);
                 if (nodo.getClave().equals(clave)) {
-                    NodoHash<K,T> valor = (NodoHash<K, T>) nodo.getValor();
                     lista.remover(i);
                     elementos--;
-                    return valor;
+                    return nodo;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
