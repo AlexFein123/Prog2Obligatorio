@@ -24,8 +24,8 @@ public class Consultas {
     public String Top5PorIdioma() {
         String[] idiomas = {"en", "fr", "it", "es", "pt"};
 
-        String respuesta = "TOP 5 PELICULAS POR IDIOMA" + "\n" +
-                "-----------------------------------" + "\n";
+        long start = System.currentTimeMillis();
+        StringBuilder respuesta = new StringBuilder();
 
         for (String idioma : idiomas) {
             Heap<PeliculaPorEvaluaciones> heapDePelis = new Heap<>(hashPeliculas.tamanio(), false);
@@ -41,24 +41,24 @@ public class Consultas {
                     heapDePelis.agregar(new PeliculaPorEvaluaciones(peli));
                 }
             }
-
-            respuesta += "-------------------------------" + "\n" +
-                    "Top 5 para: " + idioma + "\n";
             for (int i = 0; i < 5 && !heapDePelis.isEmpty(); i++) {
                 PeliculaPorEvaluaciones topMasEvaluada = heapDePelis.obtenerYEliminar();
                 Pelicula top = topMasEvaluada.getPelicula();
-                respuesta += "Id" + top.getId() + "\n"
-                        + "Titulo: " + top.getTitulo() + "\n"
-                        + "Evaluacion: " + top.cantidadDeEvaluaciones() + "\n"
-                        + "Idioma: " + idioma + "\n";
-
+                respuesta.append(top.getId()).append(", ")
+                        .append(top.getTitulo()).append(",")
+                        .append(top.cantidadDeEvaluaciones()).append(",")
+                        .append(idioma).append("\n");
             }
         }
-        return respuesta;
+
+        long end = System.currentTimeMillis();
+        respuesta.append("Tiempo de ejecución de la consulta: ").append(end - start);
+        return respuesta.toString();
     }
 
     //2
     public String top10MejoresPeliculasCalificadasMedia() {
+        long start = System.currentTimeMillis();
         Object[] arrayObjects = hashPeliculas.getValuesArray();
         Pelicula[] arrayPeliculas = new Pelicula[arrayObjects.length];
         for (int i = 0; i < arrayObjects.length; i++) {
@@ -78,92 +78,107 @@ public class Consultas {
                 heapCalificacionesPeliculas.agregar(pelicula);
             }
         }
-        for (int i = 0; i < 10; i++) {
-            top10[i] = heapCalificacionesPeliculas.obtenerYEliminar();
+
+        StringBuilder resultado = new StringBuilder();
+
+        for (int i = 0; i < 10 && !heapCalificacionesPeliculas.isEmpty(); i++) {
+            Pelicula peli = heapCalificacionesPeliculas.obtenerYEliminar();
+            resultado.append(peli.getId()).append(", ")
+                    .append(peli.getTitulo()).append(",")
+                    .append(String.format("%.2f", peli.calificacionMedia())).append("\n");
         }
-        String resultado = "TOP 10 PELICULAS POR CALIFICACIÓN:" + "\n" +
-                "------------------------------------+" + "\n";
-        for (int posPelicula = 0; posPelicula < top10.length; posPelicula++) {
-            Pelicula pelicula = top10[posPelicula];
-            resultado += (posPelicula + 1) + "- " + pelicula.toString() + "\n";
-        }
-        return resultado;
+
+        long end = System.currentTimeMillis();
+        resultado.append("Tiempo de ejecución de la consulta: ").append(end - start);
+        return resultado.toString();
     }
 
     //3
     public String getTopSagas() {
+        long start = System.currentTimeMillis();
+
         Object[] arrayObjects = sagaHash.getValuesArray();
         Saga[] sagaArray = new Saga[arrayObjects.length];
         for (int i = 0; i < arrayObjects.length; i++) {
             sagaArray[i] = (Saga) arrayObjects[i];
         }
-        //Saga[] sagaArray = (Saga[]) sagaHash.getValuesArray();
-
-        if (sagaArray.length < 10) {
-            System.out.println("No hay suficientes sagas");
-            return null;
-        }
-        Saga[] top10 = new Saga[10];
 
         Heap<Saga> heapSagas = new Heap<>(sagaArray.length, false);
         for (Saga saga : sagaArray) {
-            heapSagas.agregar(saga);
+            if (saga != null) {
+                heapSagas.agregar(saga);
+            }
         }
-        for (int i = 0; i < 10; i++) {
-            top10[i] = heapSagas.obtenerYEliminar();
-        }
-        String resultado = "TOP 5 SAGAS POR INGRESOS" + "\n" +
-                "------------------------------------" + "\n";
 
-        for (int posSaga = 0; posSaga < top10.length; posSaga++) {
-            Saga saga = top10[posSaga];
-            resultado += (posSaga + 1) + "- " + saga.toString() + "\n";
+        StringBuilder resultado = new StringBuilder();
+
+        for (int i = 0; i < 5 && !heapSagas.isEmpty(); i++) {
+            Saga saga = heapSagas.obtenerYEliminar();
+
+
+            StringBuilder listaIds = new StringBuilder();
+            listaIds.append("[");
+            ListaEnlazada<Pelicula> pelis = saga.getPeliculas();
+            for (int j = 0; j < pelis.tamanio(); j++) {
+                try {
+                    listaIds.append(pelis.obtenervalorposicion(j).getId());
+                    if (j < pelis.tamanio() - 1) listaIds.append(",");
+                } catch (FueraDeRango e) {
+                    e.printStackTrace();
+                }
+            }
+            listaIds.append("]");
+
+            resultado.append(saga.getId()).append(",\n");  // línea 1: solo id
+            resultado.append(saga.getNombre()).append(",")
+                    .append(pelis.tamanio()).append(",")
+                    .append(listaIds).append(saga.sumaIngreso()).append("\n");
         }
-        return resultado;
+
+        long end = System.currentTimeMillis();
+        resultado.append("Tiempo de ejecución de la consulta: ").append(end - start);
+        return resultado.toString();
     }
 
     //4
     public String top10MejoresDirectoresCalificacionMedia() {
+        long start = System.currentTimeMillis();
+
         Object[] arrayObjects = directorHash.getValuesArray();
         Director[] directorArray = new Director[arrayObjects.length];
         for (int i = 0; i < arrayObjects.length; i++) {
             directorArray[i] = (Director) arrayObjects[i];
         }
 
-        if (directorArray.length < 10) {
-            System.out.println("No hay suficientes directors");
-            return null;
-        }
-
-        Director[] top10 = new Director[10];
         Heap<Director> heapCalificacionesDirector = new Heap<>(directorArray.length, false);
 
         for (Director director : directorArray) {
+            if (director == null) continue;
             ListaEnlazada<Pelicula> peliculas = director.getPeliculasdelDirector();
             if (peliculas.tamanio() > 1 && director.totalEvaluaciones() > 100) {
                 heapCalificacionesDirector.agregar(director);
             }
         }
-        if (heapCalificacionesDirector.obtenerTamanio() < 10) {
-            return ("No hay suficientes directors");
+
+        StringBuilder resultado = new StringBuilder();
+
+        for (int i = 0; i < 10 && !heapCalificacionesDirector.isEmpty(); i++) {
+            Director director = heapCalificacionesDirector.obtenerYEliminar();
+            resultado.append(director.getNombre()).append(",")
+                    .append(director.getPeliculasdelDirector().tamanio()).append(",")
+                    .append(String.format("%.2f", director.calificacionMedia())).append("\n");
         }
 
-        for (int i = 0; i < 10; i++) {
-            top10[i] = heapCalificacionesDirector.obtenerYEliminar();
-        }
-        String resultado = "TOP 10 DIRECTORES POR CALIFICACIÓN:" + "\n" +
-                "------------------------------------+" + "\n";
-        for (int directorPos = 0; directorPos < top10.length; directorPos++) {
-            Director director = top10[directorPos];
-            resultado += (directorPos + 1) + "- " + director.toString() + "\n";
-        }
-        return resultado;
+        long end = System.currentTimeMillis();
+        resultado.append("Tiempo de ejecución de la consulta: ").append(end - start);
+        return resultado.toString();
     }
 
     //5
 
     public String mejorActorPorMes() {
-        //Actor[] actorArray = (Actor[]) actorHash.getValuesArray();
+        long start = System.currentTimeMillis();
+
         Object[] arrayObjects = actorHash.getValuesArray();
         Actor[] actorArray = new Actor[arrayObjects.length];
         for (int i = 0; i < arrayObjects.length; i++) {
@@ -172,36 +187,43 @@ public class Consultas {
 
         Actor[] mejores = new Actor[12];
         int[] maxCalificacionesPorMes = new int[12];
-        for (int meses = 0; meses < 12; meses++) {
-            maxCalificacionesPorMes[meses] = -1;
+        for (int mes = 0; mes < 12; mes++) {
+            maxCalificacionesPorMes[mes] = -1;
         }
 
         for (Actor actor : actorArray) {
             if (actor != null) {
-                int[] calificacionesActorMes = actor.calificacionPorMes(); //array con todas las calificaciones del actor x mes
+                int[] calificacionesActorMes = actor.calificacionPorMes();
                 for (int mes = 0; mes < 12; mes++) {
                     if (calificacionesActorMes[mes] > maxCalificacionesPorMes[mes]) {
                         maxCalificacionesPorMes[mes] = calificacionesActorMes[mes];
                         mejores[mes] = actor;
-
                     }
                 }
             }
         }
-        String resultado = "ACTORES PRINCIPALES POR MES" + "\n" +
-                "---------------------------------------" + "\n";
 
-        for (int meses = 0; meses < 12; meses++) {
-            resultado += "Mes: " + (meses + 1) + "\n"
-                    + "Actor: " + mejores[meses].toString() + "\n"
-                    + "Cantidad de Peliculas (distintas): " + mejores[meses].getPeliculasDistintasPorMes(meses) + "\n"
-                    + "Cantidad de Calificaciones: " + maxCalificacionesPorMes[meses] + "\n";
+        StringBuilder resultado = new StringBuilder();
+
+        for (int mes = 0; mes < 12; mes++) {
+            Actor actor = mejores[mes];
+            if (actor != null) {
+                resultado.append((mes + 1)).append(",")
+                        .append(actor.getNombre()).append(",")
+                        .append(actor.getPeliculasDistintasPorMes(mes)).append(",")
+                        .append(maxCalificacionesPorMes[mes]).append("\n");
+            }
         }
-        return resultado;
+
+        long end = System.currentTimeMillis();
+        resultado.append("Tiempo de ejecución de la consulta: ").append(end - start);
+        return resultado.toString();
     }
 
     //6
     public String topUsuariosConMasClasificacionesPorGenero() {
+        long start = System.currentTimeMillis();
+
         HashTableCerrada<String, Integer> conteoGeneros = new HashTableCerrada<>(50);
 
         Object[] peliculas = hashPeliculas.getValuesArray();
@@ -237,8 +259,7 @@ public class Consultas {
             }
         }
 
-        String resultado = "USUARIO CON MAS CLASIFICACIONES POR GENERO\n" +
-                "--------------------------------------------\n";
+        StringBuilder resultado = new StringBuilder();
 
         for (int i = 0; i < 10 && !heapGeneros.isEmpty(); i++) {
             Pair<String, Integer> parGenero = heapGeneros.obtenerYEliminar();
@@ -257,7 +278,7 @@ public class Consultas {
                         Evaluacion eval = evaluaciones.obtenervalorposicion(j);
                         Usuario usuario = eval.getUser();
                         if (usuario == null) continue;
-                        int userId = (int) usuario.getId(); // ← tratamos el ID como int
+                        int userId = usuario.getId();
 
                         Integer cantidad = conteoUsuario.obtener(userId);
                         if (cantidad == null) cantidad = 0;
@@ -283,26 +304,18 @@ public class Consultas {
                 }
             }
 
-            resultado += "Genero: " + genero + "\n";
             if (!heapUsuarios.isEmpty()) {
                 Pair<Integer, Integer> topUser = heapUsuarios.obtenerYEliminar();
-                Usuario u = usuarioHash.obtener(topUser.getKey());
-                if (u != null) {
-                    resultado += u.toString();
-                    resultado += "Cantidad de Clasificaciones: " + topUser.getValue() + "\n";
-                } else {
-                    resultado += "Usuario desconocido (ID: " + topUser.getKey() + ") → "
-                            + topUser.getValue() + " clasificaciones\n";
-                }
-            } else {
-                resultado += "No se encontraron usuarios para este género.\n";
+                resultado.append(topUser.getKey()).append(",")
+                        .append(genero).append(",")
+                        .append(topUser.getValue()).append("\n");
             }
-            resultado += "\n";
         }
 
-        return resultado;
+        long end = System.currentTimeMillis();
+        resultado.append("Tiempo de ejecución de la consulta: ").append(end - start);
+        return resultado.toString();
     }
-
 }
 
 
